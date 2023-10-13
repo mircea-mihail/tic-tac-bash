@@ -12,6 +12,8 @@
 #define CYAN_PAIR 7 
 #define WHITE_PAIR 8
 
+#define min(a, b) (a < b ? a : b)
+
 void dealWithColors()
 {
     start_color();
@@ -41,17 +43,22 @@ void printTableLines(int p_nRows, int p_nCols, int p_nCellSize, int p_nScreenGap
         mvaddch(i, nColumnStart + p_nCellSize, ch | COLOR_PAIR(RED_PAIR));
         mvaddch(i, nColumnStart + p_nCellSize + 1, ch | COLOR_PAIR(RED_PAIR));
     }
-    
+    int nColumnLength = p_nRows - 2*p_nScreenGap + 3; // 3 is an arbitrary number to make horizontal lines a bit longer
     // a char is twice as tall as is is wide so the cellsize needs adjustment
-    int nCellAdjustment = (p_nCols - p_nRows - p_nScreenGap) / 3;
     p_nCellSize /= 2; 
+
     int nRowStart = (p_nRows-p_nCellSize)/2;
     
-    for( int i = p_nScreenGap + nCellAdjustment; i < p_nCols - p_nScreenGap - nCellAdjustment; i++)
+    for( int i = p_nCols/2; i < p_nCols/2 + nColumnLength; i++)
     {
         char ch = ' ';
+        //add to the right of the center
         mvaddch(nRowStart, i, ch | COLOR_PAIR(RED_PAIR));
         mvaddch(nRowStart + p_nCellSize, i, ch | COLOR_PAIR(RED_PAIR));
+
+        //and to the left
+        mvaddch(nRowStart, p_nCols - i, ch | COLOR_PAIR(RED_PAIR));
+        mvaddch(nRowStart + p_nCellSize, p_nCols - i, ch | COLOR_PAIR(RED_PAIR));
     }
 }
 
@@ -59,11 +66,16 @@ void printTable(int npTable[3][3])
 {
     int nRows, nCols;
     int nStartRow, nStartCol;
+
     getmaxyx(stdscr, nRows, nCols);
+    int nCellSize =  min(nRows, nCols) / 2;
+    int nScreenGap = min(nRows, nCols) / 5;
+
     nStartRow = nRows/2-1;
     nStartCol = (nCols-6)/2;
 
-    printTableLines(nRows, nCols, 30, 5);
+    printTableLines(nRows, nCols, nCellSize, nScreenGap);
+    
     for(int i = 0; i < 3; i++)
     {
         move(nStartRow, nStartCol);
@@ -268,8 +280,6 @@ int main()
     while(!bExit)
     {
         clear();
-        movPrintX(10, 5, 6);
-        movPrint0(10, 15, 6);
 
         movPrintX(20, 5, 4);
         movPrint0(20, 15, 4);
