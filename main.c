@@ -11,6 +11,14 @@ void initCurses()
     noecho();
     // hide the cursor
     curs_set(0);
+
+    if (has_colors() == FALSE) {
+        endwin();
+        printf("Your terminal does not support color\n");
+        return 1;
+    }
+
+    dealWithColors();
 }
 
 int main()
@@ -26,14 +34,6 @@ int main()
     int nWinner;
     
     initCurses();
-
-    if (has_colors() == FALSE) {
-        endwin();
-        printf("Your terminal does not support color\n");
-        return 1;
-    }
-
-    dealWithColors();
 
     while(!bExit)
     {

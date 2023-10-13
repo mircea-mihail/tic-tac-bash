@@ -127,16 +127,16 @@ void printTable(int npTable[3][3])
 
     printTableLines(nRows, nCols, nCellSize, nScreenGap);
 
-    // mvPrintX(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
+    mvPrintX(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
     // mvPrint0(nRows/2, nCols/2, 4);
     
-    for(int i = 0; i < 3; i++)
-    {
-        move(nStartRow, nStartCol);
-        for(int j = 0; j < 3; j++)
-        {
-            printw("%d ", npTable[i][j]);
-        }
-        nStartRow +=1;
-    } 
+    // for(int i = 0; i < 3; i++)
+    // {
+    //     move(nStartRow, nStartCol);
+    //     for(int j = 0; j < 3; j++)
+    //     {
+    //         printw("%d ", npTable[i][j]);
+    //     }
+    //     nStartRow +=1;
+    // } 
 }
