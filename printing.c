@@ -57,21 +57,40 @@ void mvPrintX(int p_nRow, int p_nCol, int p_nSize, bool p_bThick)
     }
 }
 
-void mvPrint0(int p_nRow, int p_nCol, int p_nSize)
+void mvPrint0(int p_nRow, int p_nCol, int p_nSize, bool p_bThick)
 {
     // mvprintw(p_row, p_col, "\033[;41m \n");
     char ch = ' ';
 
     for(int i = 1; i < p_nSize; i++)
     {
-        mvaddch(p_nRow-i, p_nCol, ch | COLOR_PAIR(BLUE_PAIR));
-        mvaddch(p_nRow-i, p_nCol+p_nSize, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow-i/2, p_nCol-p_nSize/2, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow+i/2, p_nCol-p_nSize/2, ch | COLOR_PAIR(BLUE_PAIR));
+        
+        mvaddch(p_nRow-i/2, p_nCol+p_nSize/2, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow+i/2, p_nCol+p_nSize/2, ch | COLOR_PAIR(BLUE_PAIR));
     }
 
     for(int i = 1; i < p_nSize; i++)
     {
-        mvaddch(p_nRow, p_nCol+i, ch | COLOR_PAIR(BLUE_PAIR));
-        mvaddch(p_nRow-p_nSize, p_nCol+i, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow-p_nSize/2, p_nCol+i/2, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow-p_nSize/2, p_nCol-i/2, ch | COLOR_PAIR(BLUE_PAIR));
+
+        mvaddch(p_nRow+p_nSize/2, p_nCol-i/2, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow+p_nSize/2, p_nCol+i/2, ch | COLOR_PAIR(BLUE_PAIR));
+    }
+
+    if(p_bThick)
+    {
+        for(int i = 1; i < p_nSize; i++)
+        {
+            mvaddch(p_nRow-i/2, p_nCol-p_nSize/2-1, ch | COLOR_PAIR(BLUE_PAIR));
+            mvaddch(p_nRow+i/2, p_nCol-p_nSize/2-1, ch | COLOR_PAIR(BLUE_PAIR));
+            
+            mvaddch(p_nRow-i/2, p_nCol+p_nSize/2+1, ch | COLOR_PAIR(BLUE_PAIR));
+            mvaddch(p_nRow+i/2, p_nCol+p_nSize/2+1, ch | COLOR_PAIR(BLUE_PAIR));
+        }
+        
     }
 }
 
@@ -127,8 +146,8 @@ void printTable(int npTable[3][3])
 
     printTableLines(nRows, nCols, nCellSize, nScreenGap);
 
-    mvPrintX(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
-    // mvPrint0(nRows/2, nCols/2, 4);
+    // mvPrintX(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
+    mvPrint0(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
     
     // for(int i = 0; i < 3; i++)
     // {

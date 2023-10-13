@@ -18,7 +18,7 @@ void dealWithColors();
 
 void mvPrintX(int p_nRow, int p_nCol, int p_nSize, bool p_bThick);
 
-void mvPrint0(int p_nRow, int p_nCol, int p_nSize);
+void mvPrint0(int p_nRow, int p_nCol, int p_nSize, bool p_bThick);
 
 void printTableLines(int p_nRows, int p_nCols, int p_nCellSize, int p_nScreenGap);
 
