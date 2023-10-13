@@ -1,6 +1,6 @@
 run:compile
-	./X-and-0
+	./x-and-0
 compile:
-	gcc -o X-and-0 main.c -lncurses
+	gcc -o x-and-0 main.c gameLogic.c -lncurses
 clean: 
-	rm X-and-0
+	rm x-and-0
