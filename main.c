@@ -64,10 +64,17 @@ void printTableLines(int p_nRows, int p_nCols, int p_nCellSize, int p_nScreenGap
 
 void printTable(int npTable[3][3])
 {
+    bool bThickLetters = false;
     int nRows, nCols;
     int nStartRow, nStartCol;
 
     getmaxyx(stdscr, nRows, nCols);
+
+    if(min(nRows, nCols) > 43)
+    {
+        bThickLetters = true;
+    }
+
     int nCellSize =  min(nRows, nCols) / 2;
     int nScreenGap = min(nRows, nCols) / 5;
 
@@ -75,16 +82,19 @@ void printTable(int npTable[3][3])
     nStartCol = (nCols-6)/2;
 
     printTableLines(nRows, nCols, nCellSize, nScreenGap);
+
+    movPrintX(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
+    // movPrint0(nRows/2, nCols/2, 4);
     
-    for(int i = 0; i < 3; i++)
-    {
-        move(nStartRow, nStartCol);
-        for(int j = 0; j < 3; j++)
-        {
-            printw("%d ", npTable[i][j]);
-        }
-        nStartRow +=1;
-    } 
+    // for(int i = 0; i < 3; i++)
+    // {
+    //     move(nStartRow, nStartCol);
+    //     for(int j = 0; j < 3; j++)
+    //     {
+    //         printw("%d ", npTable[i][j]);
+    //     }
+    //     nStartRow +=1;
+    // } 
 }
 
 void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
@@ -213,17 +223,42 @@ int checkWinCondition(int npTable[3][3])
     return 0;
 }
 
-void movPrintX(int p_nRow, int p_nCol, int p_nSize){
+void movPrintX(int p_nRow, int p_nCol, int p_nSize, bool p_bThick){
     // mvprintw(p_row, p_col, "\033[;41m \n");
     char ch = ' ';
 
     for(int i = 0; i <= p_nSize; i++)
     {
-        mvaddch(p_nRow-i, p_nCol+i, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow-i/2, p_nCol+i/2, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow+i/2, p_nCol-i/2, ch | COLOR_PAIR(BLUE_PAIR));
     }
     for(int i = 0; i <= p_nSize; i++)
     {
-        mvaddch(p_nRow-i, p_nCol+p_nSize-i, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow-i/2, p_nCol-i/2, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow+i/2, p_nCol+i/2, ch | COLOR_PAIR(BLUE_PAIR));
+    }
+
+    if(p_bThick)
+    {
+        p_nRow += 1;
+
+        for(int i = 0; i <= p_nSize; i++)
+        {
+            mvaddch(p_nRow-i/2, p_nCol+i/2, ch | COLOR_PAIR(BLUE_PAIR));
+            mvaddch(p_nRow+i/2, p_nCol-i/2, ch | COLOR_PAIR(BLUE_PAIR));
+        }   
+
+        mvaddch(p_nRow+p_nSize/2, p_nCol-p_nSize/2-1, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow+p_nSize/2, p_nCol+p_nSize/2+1, ch | COLOR_PAIR(BLUE_PAIR));
+
+        for(int i = 0; i <= p_nSize; i++)
+        {
+            mvaddch(p_nRow-i/2, p_nCol-i/2, ch | COLOR_PAIR(BLUE_PAIR));
+            mvaddch(p_nRow+i/2, p_nCol+i/2, ch | COLOR_PAIR(BLUE_PAIR));
+        }
+
+        mvaddch(p_nRow-p_nSize/2-1, p_nCol-p_nSize/2-1, ch | COLOR_PAIR(BLUE_PAIR));
+        mvaddch(p_nRow-p_nSize/2-1, p_nCol+p_nSize/2+1, ch | COLOR_PAIR(BLUE_PAIR));
     }
 }
 
@@ -252,6 +287,16 @@ bool checkExit(int nUserInput)
     return 0;
 }
 
+void initCurses()
+{
+    // Start curses mode
+    initscr();
+    // don't show user input unless otherwise stated 			        
+    noecho();
+    // hide the cursor
+    curs_set(0);
+}
+
 int main()
 {
     bool bExit = 0;
@@ -264,11 +309,8 @@ int main()
                 };
     int nWinner;
     
-    // Start curses mode
-    initscr();
-    // don't show user input unless otherwise stated 			        
-    noecho();
- 
+    initCurses();
+
     if (has_colors() == FALSE) {
         endwin();
         printf("Your terminal does not support color\n");
@@ -280,9 +322,6 @@ int main()
     while(!bExit)
     {
         clear();
-
-        movPrintX(20, 5, 4);
-        movPrint0(20, 15, 4);
 
         printTable(npBackendTable);
         // actually print on the screen
