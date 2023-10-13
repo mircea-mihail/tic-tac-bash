@@ -1,7 +1,5 @@
 #include <ncurses.h>
-
-#define ZERO 1
-#define EX 2  
+#include "gameLogic.h"
 
 #define BLACK_PAIR 1
 #define RED_PAIR 2
@@ -28,7 +26,16 @@ void dealWithColors()
     init_pair(WHITE_PAIR, COLOR_WHITE, COLOR_WHITE);
 
     use_default_colors(); //keeps my background transparrent 
+}
 
+void initCurses()
+{
+    // Start curses mode
+    initscr();
+    // don't show user input unless otherwise stated 			        
+    noecho();
+    // hide the cursor
+    curs_set(0);
 }
     
 void printTableLines(int p_nRows, int p_nCols, int p_nCellSize, int p_nScreenGap)
@@ -83,144 +90,18 @@ void printTable(int npTable[3][3])
 
     printTableLines(nRows, nCols, nCellSize, nScreenGap);
 
-    movPrintX(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
+    // movPrintX(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
     // movPrint0(nRows/2, nCols/2, 4);
     
-    // for(int i = 0; i < 3; i++)
-    // {
-    //     move(nStartRow, nStartCol);
-    //     for(int j = 0; j < 3; j++)
-    //     {
-    //         printw("%d ", npTable[i][j]);
-    //     }
-    //     nStartRow +=1;
-    // } 
-}
-
-void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
-{
-    switch(nUserInput)
-    { 
-        case 'q': 
-            if(npTable[0][0] == 0)
-                npTable[0][0] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        case 'w': 
-            if(npTable[0][1] == 0)
-                npTable[0][1] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        case 'e':
-            if(npTable[0][2] == 0) 
-                npTable[0][2] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        case 'a': 
-            if(npTable[1][0] == 0)
-                npTable[1][0] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        case 's': 
-            if(npTable[1][1] == 0)
-                npTable[1][1] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        case 'd':
-            if(npTable[1][2] == 0) 
-                npTable[1][2] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        case 'z': 
-            if(npTable[2][0] == 0)
-                npTable[2][0] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        case 'x': 
-            if(npTable[2][1] == 0)
-                npTable[2][1] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        case 'c': 
-            if(npTable[2][2] == 0)
-                npTable[2][2] = *bpPlayerTurn ? ZERO : EX; 
-            else
-                return;
-            break;
-        default: break;
-    }
-    // change turn if the other player made a valid move, else, let him try again 
-    *bpPlayerTurn = !*bpPlayerTurn;
-}
-
-// returns the winning player
-int checkWinCondition(int npTable[3][3])
-{
-    bool winCondition = true;
-    //check diagonal
-
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < 3; i++)
     {
-        winCondition = winCondition && (npTable[i][i] == npTable[i+1][i+1]) && (npTable[i][i] != 0);
-    }
-    if(winCondition)
-    {
-        return npTable[0][0];
-    }
-
-    //check other diagonal
-    winCondition = true;
-
-    for(int i = 0; i < 2; i++)
-    {
-        winCondition = winCondition && (npTable[i][2-i] == npTable[i+1][2-(i+1)]) && (npTable[i][i] != 0);
-    }
-    if(winCondition)
-    {
-        return npTable[0][2];
-    }
-
-    //check columns
-    //PROBLEMS
-    for(int j = 0; j <= 2; j++)
-    {
-        winCondition = true;
-
-        for(int i = 0; i < 2; i++)
+        move(nStartRow, nStartCol);
+        for(int j = 0; j < 3; j++)
         {
-            winCondition = winCondition && (npTable[j][i] == npTable[j][i+1]) && (npTable[j][i] != 0);
+            printw("%d ", npTable[i][j]);
         }
-        if(winCondition)
-        {
-            return npTable[j][0];
-        }
-    }
-    
-    //check rows
-
-    for(int j = 0; j <= 2; j++)
-    {
-        winCondition = true;
-
-        for(int i = 0; i < 2; i++)
-        {
-            winCondition = winCondition && (npTable[i][j] == npTable[i+1][j]) && (npTable[i][j] != 0);
-        }
-        if(winCondition)
-        {
-            return npTable[0][j];
-        }
-    }
-
-    return 0;
+        nStartRow +=1;
+    } 
 }
 
 void movPrintX(int p_nRow, int p_nCol, int p_nSize, bool p_bThick){
@@ -277,24 +158,6 @@ void movPrint0(int p_nRow, int p_nCol, int p_nSize){
         mvaddch(p_nRow, p_nCol+i, ch | COLOR_PAIR(BLUE_PAIR));
         mvaddch(p_nRow-p_nSize, p_nCol+i, ch | COLOR_PAIR(BLUE_PAIR));
     }
-}
-
-bool checkExit(int nUserInput)
-{
-    if(nUserInput == 'Q'){
-        return 1;
-    }
-    return 0;
-}
-
-void initCurses()
-{
-    // Start curses mode
-    initscr();
-    // don't show user input unless otherwise stated 			        
-    noecho();
-    // hide the cursor
-    curs_set(0);
 }
 
 int main()
