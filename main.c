@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <stdlib.h>
 
 #include "gameLogic.h"
 #include "printing.h"
@@ -15,7 +16,7 @@ void initCurses()
     if (has_colors() == FALSE) {
         endwin();
         printf("Your terminal does not support color\n");
-        return 1;
+        exit(1);
     }
 
     dealWithColors();
@@ -53,11 +54,13 @@ int main()
             printTable(npBackendTable);
             refresh();
 
-            mvprintw(0, 0, "the winner is player %d", nWinner);
+            mvprintw(0, 0, "the winner is %c", nWinner == 1 ? '0' : 'X' );
+            
             refresh();
             getch();
             bExit = true;
         }
+        
         bExit = checkExit(nUserInput) || bExit;
     }
     // End curses mode

@@ -59,10 +59,12 @@ void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
             else
                 return;
             break;
-        default: break;
+        default: 
+            //if it gets to default that means that no valid input was given
+            return;
     }
     // change turn if the other player made a valid move, else, let him try again 
-    *bpPlayerTurn = !*bpPlayerTurn;
+    *bpPlayerTurn = !(*bpPlayerTurn);
 }
 
 // returns the winning player
