@@ -1,8 +1,16 @@
 #include <ncurses.h>
 #include "gameLogic.h"
 
+void checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn){
+
+    // if()
+
+    return false;
+}
+
 void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
 {
+    bool mouseInput = false;
     switch(nUserInput)
     { 
         case 'q': 
@@ -60,11 +68,15 @@ void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
                 return;
             break;
         default: 
-            //if it gets to default that means that no valid input was given
-            return;
+            // no valid keyboard input so check mouse input
+            mouseInput = checkMouseInput();
+            break;
     }
     // change turn if the other player made a valid move, else, let him try again 
-    *bpPlayerTurn = !(*bpPlayerTurn);
+    if(mouseInput)
+    {
+        *bpPlayerTurn = !(*bpPlayerTurn);
+    }
 }
 
 // returns the winning player
