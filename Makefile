@@ -1,6 +1,6 @@
 run:compile
-	./x-and-0
+	./tic-tac-bash
 compile:
-	gcc -o x-and-0 main.c gameLogic.c printing.c -lncurses
+	gcc -o tic-tac-bash main.c gameLogic.c printing.c -lncurses
 clean: 
-	rm x-and-0
+	rm tic-tac-bash
