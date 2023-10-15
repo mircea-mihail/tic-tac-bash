@@ -10,11 +10,7 @@ which will put this game's executable on your OS' $PATH
 
 ## How to play ##
 
-The first player is X. In order to pick a place in the table they have to click on it with the mouse. Run the game with the -k argument as shown below to play using the keyboard.
-
-``` tic-tac-bash -k ```
-
-This maps the game's tabe as shown below:
+The first player is X. In order to pick a spot in the table they have to click on the desired spot with the mouse. There is also the option to play using the keyboard. Below is shown how the keys are mapped on the game's table:
 
 ```
 q | w | e
