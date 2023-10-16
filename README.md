@@ -6,7 +6,10 @@
 
 In order to install this project on your computer what you have to to is run:
 ``` make install ``` 
-which will put this game's executable on your OS' $PATH
+which will put this game's executable on your OS' $PATH (/usr/local/bin)
+
+You can move the executable anywhere on the path yourself if /usr/local/bin does not work for you. You can also run this project directly from this directory with 
+``` ./tic-tac-bash ```
 
 ## How to play ##
 
