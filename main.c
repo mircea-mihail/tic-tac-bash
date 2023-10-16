@@ -41,31 +41,30 @@ int main()
                     {0, 0, 0},
                     {0, 0, 0}
                 };
-    int nWinner;
-    
+
     initCurses();
 
     while(!bExit)
     {
         clear();
 
-        if(nUserInput == KEY_MOUSE)
-        {
-            MEVENT event;
-            if (getmouse(&event) == OK) 
-            {
-                printw("Mouse at row=%d, column=%d bstate=0x%08lx", 
-                                event.y,   event.x,  event.bstate);
-                if(event.bstate & BUTTON1_PRESSED)
-                {
-                    printw("YES THE LEFT CLICK IS WINNER");
-                }
-            }
-            else 
-            {
-                printw("Got bad mouse event.");
-            }
-        }
+        // if(nUserInput == KEY_MOUSE)
+        // {
+        //     MEVENT event;
+        //     if (getmouse(&event) == OK) 
+        //     {
+        //         printw("Mouse at row=%d, column=%d bstate=0x%08lx", 
+        //                         event.y,   event.x,  event.bstate);
+        //         if(event.bstate & BUTTON1_PRESSED)
+        //         {
+        //             printw("YES THE LEFT CLICK IS WINNER");
+        //         }
+        //     }
+        //     else 
+        //     {
+        //         printw("Got bad mouse event.");
+        //     }
+        // }
         printTable(npBackendTable);
         // actually print on the screen
         refresh();			        
@@ -74,21 +73,7 @@ int main()
         
         updateTable(npBackendTable, nUserInput, &bPlayerTurn);
 
-        nWinner = checkWinCondition(npBackendTable);        
-        if(nWinner)
-        {
-            clear();
-            printTable(npBackendTable);
-            refresh();
-
-            mvprintw(0, 0, "the winner is %c", nWinner == 1 ? '0' : 'X' );
-            
-            refresh();
-            getch();
-            bExit = true;
-        }
-        
-        bExit = checkExit(nUserInput) || bExit;
+        bExit = checkExit(nUserInput) || printWinner(npBackendTable) || printDraw(npBackendTable);
     }
     // End curses mode
     endwin();			

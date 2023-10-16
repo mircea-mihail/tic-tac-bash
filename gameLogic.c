@@ -1,7 +1,8 @@
 #include <ncurses.h>
 #include "gameLogic.h"
+#include "printing.h"
 
-void checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn){
+bool checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn){
 
     // if()
 
@@ -10,7 +11,6 @@ void checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn){
 
 void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
 {
-    bool mouseInput = false;
     switch(nUserInput)
     { 
         case 'q': 
@@ -68,30 +68,33 @@ void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
                 return;
             break;
         default: 
-            // no valid keyboard input so check mouse input
-            mouseInput = checkMouseInput();
+            if(!checkMouse(npTable, nUserInput, bpPlayerTurn))
+            {
+                return;
+            }
             break;
     }
+
     // change turn if the other player made a valid move, else, let him try again 
-    if(mouseInput)
-    {
+    // if(mouseInput)
+    // {
         *bpPlayerTurn = !(*bpPlayerTurn);
-    }
+    // }
 }
 
 // returns the winning player
-int checkWinCondition(int npTable[3][3])
+int checkWinCondition(int p_npTable[3][3])
 {
     bool winCondition = true;
     //check diagonal
 
     for(int i = 0; i < 2; i++)
     {
-        winCondition = winCondition && (npTable[i][i] == npTable[i+1][i+1]) && (npTable[i][i] != 0);
+        winCondition = winCondition && (p_npTable[i][i] == p_npTable[i+1][i+1]) && (p_npTable[i][i] != 0);
     }
     if(winCondition)
     {
-        return npTable[0][0];
+        return p_npTable[0][0];
     }
 
     //check other diagonal
@@ -99,11 +102,11 @@ int checkWinCondition(int npTable[3][3])
 
     for(int i = 0; i < 2; i++)
     {
-        winCondition = winCondition && (npTable[i][2-i] == npTable[i+1][2-(i+1)]) && (npTable[i][i] != 0);
+        winCondition = winCondition && (p_npTable[i][2-i] == p_npTable[i+1][2-(i+1)]) && (p_npTable[i][i] != 0);
     }
     if(winCondition)
     {
-        return npTable[0][2];
+        return p_npTable[0][2];
     }
 
     //check columns
@@ -114,11 +117,11 @@ int checkWinCondition(int npTable[3][3])
 
         for(int i = 0; i < 2; i++)
         {
-            winCondition = winCondition && (npTable[j][i] == npTable[j][i+1]) && (npTable[j][i] != 0);
+            winCondition = winCondition && (p_npTable[j][i] == p_npTable[j][i+1]) && (p_npTable[j][i] != 0);
         }
         if(winCondition)
         {
-            return npTable[j][0];
+            return p_npTable[j][0];
         }
     }
     
@@ -130,15 +133,67 @@ int checkWinCondition(int npTable[3][3])
 
         for(int i = 0; i < 2; i++)
         {
-            winCondition = winCondition && (npTable[i][j] == npTable[i+1][j]) && (npTable[i][j] != 0);
+            winCondition = winCondition && (p_npTable[i][j] == p_npTable[i+1][j]) && (p_npTable[i][j] != 0);
         }
         if(winCondition)
         {
-            return npTable[0][j];
+            return p_npTable[0][j];
         }
     }
 
     return 0;
+}
+
+bool printWinner(int p_npTable[3][3])
+{
+    int nWinner = checkWinCondition(p_npTable);        
+    if(nWinner)
+    {
+        clear();
+        printTable(p_npTable);
+        refresh();
+
+        mvprintw(0, 0, "the winner is %c", nWinner == 1 ? '0' : 'X' );
+        
+        refresh();
+        getch();
+        return true;
+    }
+    return false;
+}
+
+bool checkDraw(int p_npTable[3][3])
+{
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            if(p_npTable[i][j] == 0)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool printDraw(int p_npTable[3][3])
+{
+    bool bWasDraw = checkDraw(p_npTable);
+
+    if(bWasDraw)
+    {
+        clear();
+        printTable(p_npTable);
+        refresh();
+
+        mvprintw(0, 0, "The game ended in a DRAW");
+        
+        refresh();
+        getch();
+        return true;
+    }
+    return false;    
 }
 
 bool checkExit(int nUserInput)

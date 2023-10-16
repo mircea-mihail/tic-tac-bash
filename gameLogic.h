@@ -10,5 +10,10 @@ int checkWinCondition(int npTable[3][3]);
 
 bool checkExit(int nUserInput);
 
+bool checkDraw(int p_npTable[3][3]);
+
+bool printWinner(int p_npTable[3][3]);
+
+bool printDraw(int p_npTable[3][3]);
 
 #endif //GAME_LOGIC_H
