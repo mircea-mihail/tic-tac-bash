@@ -2,9 +2,32 @@
 #include "gameLogic.h"
 #include "printing.h"
 
-bool checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn){
+bool checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
+{
+    // int nRows, nCols;
+    // getmaxyx(stdscr, nRows, nCols);
 
-    // if()
+    // MEVENT mMouseEvent;
+    // int nClickRow, nClickCol;
+
+    // if (nUserInput == KEY_MOUSE && getmouse(&mMouseEvent) == OK)
+    // {
+    //     nClickCol = mMouseEvent.x, nClickRow = mMouseEvent.y;
+    //     if (   (mMouseEvent.bstate & (BUTTON1_CLICKED | BUTTON1_PRESSED)) 
+    //         || (mMouseEvent.bstate & (BUTTON3_CLICKED | BUTTON3_PRESSED)))
+    //     {
+    //         if(nClickRow < nRows/2)
+    //         {
+    //             npTable[0][0] = *bpPlayerTurn ? ZERO : EX;
+    //             return true;
+    //         }
+    //         else
+    //         {
+    //             npTable[2][2] = *bpPlayerTurn ? ZERO : EX;
+    //             return true;
+    //         }
+    //     }
+    // }
 
     return false;
 }

@@ -21,12 +21,15 @@ void initCurses()
 
     dealWithColors();
 
+    // nodelay(stdscr, TRUE);
+    keypad(stdscr, TRUE);
+    printw(("\033[?1003h\n"));
     // Enables keypad mode. This makes (at least for me) mouse events getting
     // reported as KEY_MOUSE, instead as of random letters.
     // keypad(stdscr, TRUE);
 
     // Don't mask any mouse events
-    mousemask(BUTTON1_CLICKED | REPORT_MOUSE_POSITION, NULL);
+    mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
 
     // printf("\033[?1003h\n"); // Makes the terminal report mouse movement events
 }
@@ -47,24 +50,7 @@ int main()
     while(!bExit)
     {
         clear();
-
-        // if(nUserInput == KEY_MOUSE)
-        // {
-        //     MEVENT event;
-        //     if (getmouse(&event) == OK) 
-        //     {
-        //         printw("Mouse at row=%d, column=%d bstate=0x%08lx", 
-        //                         event.y,   event.x,  event.bstate);
-        //         if(event.bstate & BUTTON1_PRESSED)
-        //         {
-        //             printw("YES THE LEFT CLICK IS WINNER");
-        //         }
-        //     }
-        //     else 
-        //     {
-        //         printw("Got bad mouse event.");
-        //     }
-        // }
+        
         printTable(npBackendTable);
         // actually print on the screen
         refresh();			        
