@@ -28,8 +28,8 @@ bool checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
                 return false;
             }
             
-            nTableIndexRow = (int)((nClickRow-nScreenGap) / ((float)(nRows-2*nScreenGap)) * 3);
-            nTableIndexCol = (int)((nClickCol-(nCols-nColumnLength*2)/2.0) / (float)(nColumnLength*2) * 3);
+            nTableIndexRow = min((int)((nClickRow-nScreenGap) / ((float)(nRows-2*nScreenGap)) * 3), 2);
+            nTableIndexCol = min((int)((nClickCol-(nCols-nColumnLength*2)/2.0) / (float)(nColumnLength*2) * 3), 2);
 
             if(npTable[nTableIndexRow][nTableIndexCol] == 0)
             {
