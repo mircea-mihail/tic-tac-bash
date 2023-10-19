@@ -13,7 +13,7 @@ You can move the executable anywhere on the path yourself if /usr/local/bin does
 
 ## How to play ##
 
-The first player is X. In order to pick a spot in the table the user has to use the keyboard. Below is shown how the keys are mapped on the game's table:
+The first player is X. In order to pick a spot in the table they have to click on the desired spot with the mouse. There is also the option to play using the keyboard. Below is shown how the keys are mapped on the game's table:
 
 ```
 q | w | e
@@ -22,3 +22,7 @@ a | s | d
 ---------
 z | x | c
 ```
+
+When the game is over, a message anouncing the winner is displayed and the player can pres any letter on the keyboard to exit. 
+
+You can also press Q any time to exit the game.
