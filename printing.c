@@ -138,8 +138,8 @@ void printTable(int npTable[3][3])
         bThickLetters = true;
     }
 
-    int nCellSize =  min(nRows, nCols) / 2;
-    int nScreenGap = min(nRows, nCols) / 5;
+    int nCellSize =  min(nRows, nCols) / CELL_SIZE_DIV_FACTOR;
+    int nScreenGap = min(nRows, nCols) / SCREEN_GAP_DIV_FACTOR;
 
     nStartRow = nRows/2-1;
     nStartCol = (nCols-6)/2;

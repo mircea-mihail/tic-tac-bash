@@ -4,30 +4,40 @@
 
 bool checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
 {
-    // int nRows, nCols;
-    // getmaxyx(stdscr, nRows, nCols);
+    int nRows, nCols;
+    getmaxyx(stdscr, nRows, nCols);
 
-    // MEVENT mMouseEvent;
-    // int nClickRow, nClickCol;
+    MEVENT mMouseEvent;
+    int nClickRow, nClickCol;
+    int nTableIndexRow, nTableIndexCol;
 
-    // if (nUserInput == KEY_MOUSE && getmouse(&mMouseEvent) == OK)
-    // {
-    //     nClickCol = mMouseEvent.x, nClickRow = mMouseEvent.y;
-    //     if (   (mMouseEvent.bstate & (BUTTON1_CLICKED | BUTTON1_PRESSED)) 
-    //         || (mMouseEvent.bstate & (BUTTON3_CLICKED | BUTTON3_PRESSED)))
-    //     {
-    //         if(nClickRow < nRows/2)
-    //         {
-    //             npTable[0][0] = *bpPlayerTurn ? ZERO : EX;
-    //             return true;
-    //         }
-    //         else
-    //         {
-    //             npTable[2][2] = *bpPlayerTurn ? ZERO : EX;
-    //             return true;
-    //         }
-    //     }
-    // }
+    // int nCellSize =  min(nRows, nCols) / CELL_SIZE_DIV_FACTOR;
+    int nScreenGap = min(nRows, nCols) / SCREEN_GAP_DIV_FACTOR;
+
+    int nColumnLength = nRows - 2*nScreenGap + 3;
+
+    if (nUserInput == KEY_MOUSE && getmouse(&mMouseEvent) == OK)
+    {
+        nClickCol = mMouseEvent.x, nClickRow = mMouseEvent.y;
+        if (   (mMouseEvent.bstate & (BUTTON1_CLICKED | BUTTON1_PRESSED)) 
+            || (mMouseEvent.bstate & (BUTTON3_CLICKED | BUTTON3_PRESSED)))
+        {
+            if( nScreenGap > nClickRow || nRows - nScreenGap < nClickRow 
+                || nCols/2 + nColumnLength < nClickCol || nCols/2 - nColumnLength > nClickCol )
+            {
+                return false;
+            }
+            
+            nTableIndexRow = (int)((nClickRow-nScreenGap) / ((float)(nRows-2*nScreenGap)) * 3);
+            nTableIndexCol = (int)((nClickCol-(nCols-nColumnLength*2)/2.0) / (float)(nColumnLength*2) * 3);
+
+            if(npTable[nTableIndexRow][nTableIndexCol] == 0)
+            {
+                npTable[nTableIndexRow][nTableIndexCol] = *bpPlayerTurn ? ZERO : EX;
+                return true;
+            }
+        }
+    }
 
     return false;
 }
@@ -98,11 +108,7 @@ void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
             break;
     }
 
-    // change turn if the other player made a valid move, else, let him try again 
-    // if(mouseInput)
-    // {
-        *bpPlayerTurn = !(*bpPlayerTurn);
-    // }
+    *bpPlayerTurn = !(*bpPlayerTurn);
 }
 
 // returns the winning player
@@ -179,7 +185,14 @@ bool printWinner(int p_npTable[3][3])
         mvprintw(0, 0, "the winner is %c", nWinner == 1 ? '0' : 'X' );
         
         refresh();
-        getch();
+        char cValidEndKey = 0;
+
+        while(   cValidEndKey < 'A' || cValidEndKey > 'z' 
+             || (cValidEndKey > 'Z' && cValidEndKey < 'a'))
+        {
+            cValidEndKey = getch();
+        }
+
         return true;
     }
     return false;
@@ -213,7 +226,15 @@ bool printDraw(int p_npTable[3][3])
         mvprintw(0, 0, "The game ended in a DRAW");
         
         refresh();
-        getch();
+        
+        char cValidEndKey = 0;
+
+        while(   cValidEndKey < 'A' || cValidEndKey > 'z' 
+             || (cValidEndKey > 'Z' && cValidEndKey < 'a'))
+        {
+            cValidEndKey = getch();
+        }
+
         return true;
     }
     return false;    

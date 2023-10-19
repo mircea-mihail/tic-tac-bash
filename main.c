@@ -21,7 +21,6 @@ void initCurses()
 
     dealWithColors();
 
-    // nodelay(stdscr, TRUE);
     keypad(stdscr, TRUE);
     printw(("\033[?1003h\n"));
     // Enables keypad mode. This makes (at least for me) mouse events getting

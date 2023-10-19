@@ -14,6 +14,9 @@
 
 #define min(a, b) (a < b ? a : b)
 
+#define CELL_SIZE_DIV_FACTOR 2
+#define SCREEN_GAP_DIV_FACTOR 5
+
 void dealWithColors();
 
 void mvPrintX(int p_nRow, int p_nCol, int p_nSize, bool p_bThick);
