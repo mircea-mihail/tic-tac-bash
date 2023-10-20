@@ -91,7 +91,7 @@ void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
         case 'x': 
             if(npTable[2][1] == 0)
                 npTable[2][1] = *bpPlayerTurn ? ZERO : EX; 
-            else
+            else  
                 return;
             break;
         case 'c': 
@@ -173,6 +173,28 @@ int checkWinCondition(int p_npTable[3][3])
     return 0;
 }
 
+void waitForInput()
+{
+    int cValidEndKey = 0;
+    MEVENT mMouseEvent;
+
+    while(   (cValidEndKey < 'A' || cValidEndKey > 'z' 
+             || (cValidEndKey > 'Z' && cValidEndKey < 'a'))
+             && cValidEndKey != ' ' && cValidEndKey != '\n')
+    {
+        cValidEndKey = getch();
+    
+        if (cValidEndKey == KEY_MOUSE && getmouse(&mMouseEvent) == OK)
+        {
+            if (   (mMouseEvent.bstate & (BUTTON1_CLICKED | BUTTON1_PRESSED)) 
+                || (mMouseEvent.bstate & (BUTTON3_CLICKED | BUTTON3_PRESSED)))
+            {
+                return;
+            }
+        }   
+    }
+}
+
 bool printWinner(int p_npTable[3][3])
 {
     int nWinner = checkWinCondition(p_npTable);        
@@ -180,18 +202,11 @@ bool printWinner(int p_npTable[3][3])
     {
         clear();
         printTable(p_npTable);
-        refresh();
-
         mvprintw(0, 0, "the winner is %c", nWinner == 1 ? '0' : 'X' );
         
         refresh();
-        char cValidEndKey = 0;
 
-        while(   cValidEndKey < 'A' || cValidEndKey > 'z' 
-             || (cValidEndKey > 'Z' && cValidEndKey < 'a'))
-        {
-            cValidEndKey = getch();
-        }
+        waitForInput();
 
         return true;
     }
@@ -220,20 +235,13 @@ bool printDraw(int p_npTable[3][3])
     if(bWasDraw)
     {
         clear();
+        
         printTable(p_npTable);
+        mvprintw(0, 0, "The game ended in a DRAW");  
+
         refresh();
 
-        mvprintw(0, 0, "The game ended in a DRAW");
-        
-        refresh();
-        
-        char cValidEndKey = 0;
-
-        while(   cValidEndKey < 'A' || cValidEndKey > 'z' 
-             || (cValidEndKey > 'Z' && cValidEndKey < 'a'))
-        {
-            cValidEndKey = getch();
-        }
+        waitForInput();
 
         return true;
     }
