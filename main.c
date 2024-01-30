@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "gameLogic.h"
 #include "printing.h"
@@ -33,8 +34,42 @@ void initCurses()
     // printf("\033[?1003h\n"); // Makes the terminal report mouse movement events
 }
 
-int main()
+void setAiVariables(int p_argc, char *p_argv[], bool *p_playWithX, bool *p_aiEnabled)
 {
+    if(p_argc > 1)
+    {
+        if(p_argc > 2)
+        {
+            if(strcmp(p_argv[1],"-ai") == 0 || strcmp(p_argv[2],"-ai") == 0)
+            {
+                *p_aiEnabled = true;
+            }
+            if(strcmp(p_argv[1],"-x") == 0 || strcmp(p_argv[2],"-x") == 0)
+            {
+                *p_playWithX = true;
+            }   
+            if(strcmp(p_argv[1],"-0") == 0 || strcmp(p_argv[2],"-0") == 0)
+            {
+                *p_playWithX = false;
+            }   
+        }
+        else if(strcmp(p_argv[1],"-ai") == 0)
+        {
+            *p_aiEnabled = true;
+        }
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    bool playWithX = true;
+    bool aiEnabled = false;
+
+    setAiVariables(argc, argv, &playWithX, &aiEnabled);
+
+    printf("ai %d, x %d", aiEnabled, playWithX);
+    return 0;
+
     bool bExit = 0;
     bool bPlayerTurn = 0;
     int nUserInput;	
