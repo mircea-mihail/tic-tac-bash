@@ -7,7 +7,7 @@
 #include "gameLogic.h"
 
 #define MAX_CHILDREN 9 // 9 possible empty table positions
-#define MAX_DEPTH 2
+#define MAX_DEPTH 1
 
 #define MAX_SCORE 100
 #define MIN_SCORE -100

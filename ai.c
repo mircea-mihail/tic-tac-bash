@@ -119,7 +119,7 @@ int getMinScore(int p_scores[3][3])
     {
         for(int j = 0; j < 3; j++)
         {
-            if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] < minScore)
+            if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] <= minScore)
             {
                 minScore = p_scores[i][j];
             }
@@ -135,13 +135,30 @@ int getMaxScore(int p_scores[3][3])
     {
         for(int j = 0; j < 3; j++)
         {
-            if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] > maxScore)
+            if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] >= maxScore)
             {
                 maxScore = p_scores[i][j];
             }
         }
     }
     return maxScore;
+}
+
+// the only purpose of this function is to keep the ai bot functional 
+// if the worst is to come. So far there has been no point in which it was 
+// needed but it is here just in case
+void setFirstFreeSpot(int p_boardState[3][3], bool p_turn)
+{
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            if(p_boardState[i][j] == 0)
+            {
+                p_boardState[i][j] = p_turn ? ZERO : EX;   
+            }
+        }
+    }   
 }
 
 void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
@@ -155,7 +172,7 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
         {
             for(int j = 0; j < 3; j++)
             {
-                if(scores[i][j] != INVALID_VALUE && scores[i][j] > maxScore)
+                if(scores[i][j] != INVALID_VALUE && scores[i][j] >= maxScore)
                 {
                     maxScore = scores[i][j];
                     bestPosOX = i;
@@ -165,6 +182,18 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
         }
         if(bestPosOX == -1 || bestPosOY == -1)
         {
+            // if here something went really bad not sure what (never happened during testing)
+            setFirstFreeSpot(p_boardState, p_turn);
+
+            // for debug, delete later
+            clear();
+            printTable(p_boardState);
+            int score = scoreTheState(p_boardState);
+            mvprintw(0, 1, "current score: ");
+            printw("%d", score);  
+            refresh();
+            waitForInput();
+
             return;
         }
 
@@ -179,7 +208,7 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
         {
             for(int j = 0; j < 3; j++)
             {
-                if(scores[i][j] != INVALID_VALUE && scores[i][j] < minScore)
+                if(scores[i][j] != INVALID_VALUE && scores[i][j] <= minScore)
                 {
                     minScore = scores[i][j];
                     bestPosOX = i;
@@ -189,6 +218,18 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
         }
         if(bestPosOX == -1 || bestPosOY == -1)
         {
+            // if here something went really bad not sure what (never happened during testing)
+            setFirstFreeSpot(p_boardState, p_turn);
+            
+            // for debug, delete later
+            clear();
+            printTable(p_boardState);
+            int score = scoreTheState(p_boardState);
+            mvprintw(0, 1, "current score: ");
+            printw("%d", score);  
+            refresh();
+            waitForInput();
+
             return;
         }
 
@@ -273,11 +314,23 @@ int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth
 void getAiMove(int p_boardState[3][3], bool p_PlayerTurn)
 {
     struct node currentNode;
-    
     copyBoardState(p_boardState, currentNode.m_boardState);
-
     miniMax(p_boardState, &currentNode, p_PlayerTurn, 0);
 }
+
+
+// void debugPrintTable(int table[3][3])
+// {
+//     mvprintw(2, 0, " ");
+//     for(int i = 0; i < 3; i++)
+//     {
+//         for(int j = 0; j < 3; j++)
+//         {
+//             printw("%d ", table[i][j]);
+//         }
+//         printw("\n");
+//     }
+// }
 
 // clear();
 // printTable(p_BackendTable);
