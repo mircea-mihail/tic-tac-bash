@@ -55,7 +55,6 @@ int scoreTheState(int p_boardState[3][3])
         }
     }
     score += getScoreFromChecker(checker);
-
     checker = 0;
 
     //check other diagonal
@@ -71,7 +70,6 @@ int scoreTheState(int p_boardState[3][3])
         }
     }
     score += getScoreFromChecker(checker);
-
     checker = 0;
 
     //check columns
@@ -89,7 +87,6 @@ int scoreTheState(int p_boardState[3][3])
             }
         }
         score += getScoreFromChecker(checker);
-
         checker = 0;
     }
     
@@ -110,40 +107,182 @@ int scoreTheState(int p_boardState[3][3])
             }
         }
         score += getScoreFromChecker(checker);
-
         checker = 0;
     }
     return score;
 }
 
-void getAiMove(int p_BackendTable[3][3], bool p_bPlayerTurn)
+int getMinScore(int p_scores[3][3])
+{
+    int minScore = MAX_SCORE;
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] < minScore)
+            {
+                minScore = p_scores[i][j];
+            }
+        }
+    }
+    return minScore;
+}
+
+int getMaxScore(int p_scores[3][3])
+{
+    int maxScore = MIN_SCORE;
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] > maxScore)
+            {
+                maxScore = p_scores[i][j];
+            }
+        }
+    }
+    return maxScore;
+}
+
+void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
+{
+    if(p_turn == MAX)
+    {
+        int maxScore = MIN_SCORE;
+        int bestPosOX = -1;
+        int bestPosOY = -1;
+        for(int i = 0; i < 3; i++)
+        {
+            for(int j = 0; j < 3; j++)
+            {
+                if(scores[i][j] != INVALID_VALUE && scores[i][j] > maxScore)
+                {
+                    maxScore = scores[i][j];
+                    bestPosOX = i;
+                    bestPosOY = j;
+                }
+            }
+        }
+        if(bestPosOX == -1 || bestPosOY == -1)
+        {
+            return;
+        }
+
+        p_boardState[bestPosOX][bestPosOY] = EX;
+    }
+    else
+    {
+        int minScore = MAX_SCORE;
+        int bestPosOX = -1;
+        int bestPosOY = -1;
+        for(int i = 0; i < 3; i++)
+        {
+            for(int j = 0; j < 3; j++)
+            {
+                if(scores[i][j] != INVALID_VALUE && scores[i][j] < minScore)
+                {
+                    minScore = scores[i][j];
+                    bestPosOX = i;
+                    bestPosOY = j;
+                }
+            }
+        }
+        if(bestPosOX == -1 || bestPosOY == -1)
+        {
+            return;
+        }
+
+        p_boardState[bestPosOX][bestPosOY] = ZERO;
+    }
+}
+
+void copyBoardState(int p_originalBoardState[3][3], int p_newBoardState[3][3])
 {
     for(int i = 0; i < 3; i++)
     {
         for(int j = 0; j < 3; j++)
         {
-            if(p_BackendTable[i][j] == 0)
-            {
-                p_BackendTable[i][j] = p_bPlayerTurn ? ZERO : EX;
-              
-                clear();
-                printTable(p_BackendTable);
-                int score = scoreTheState(p_BackendTable);
-                mvprintw(0, 1, "current score: ");
-                printw("%d", score);  
-                refresh();
-                waitForInput();
-
-                return;
-            }
+            p_newBoardState[i][j] = p_originalBoardState[i][j];
         }
     }
 }
 
+int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth)
+{
+    if(p_depth > MAX_DEPTH)
+    {
+        return scoreTheState(p_node->m_boardState);
+    }
+
+    // stop if someone won or if it is a draw
+    int winner = checkWinCondition(p_node->m_boardState);  
+    if(winner == EX)
+    {
+        return MAX_SCORE;
+    }
+    if(winner == ZERO)
+    {
+        return MIN_SCORE;
+    }
+    if(checkDraw(p_node->m_boardState))
+    {
+        return 0;
+    }
+
+    int scoresForMoves[3][3];
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            scoresForMoves[i][j] = INVALID_VALUE;
+        }
+    }
+
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            if(p_node->m_boardState[i][j] == 0)
+            {
+                struct node newNode;
+                copyBoardState(p_node->m_boardState, newNode.m_boardState);
+                newNode.m_boardState[i][j] = p_turn ? ZERO : EX;
+                scoresForMoves[i][j] = miniMax(p_boardState, &newNode, !p_turn, p_depth + 1);
+            }
+        }
+    }
+
+    if(p_depth != 0)
+    {
+        if(p_turn == MAX)
+        {
+            return getMaxScore(scoresForMoves);
+        }
+        if(p_turn == MIN)
+        {
+            return getMinScore(scoresForMoves);
+        }
+    }
+    else // do the best move possible considering previously found scores
+    {
+        setTable(scoresForMoves, p_boardState, p_turn);
+    }
+    return 0;
+}
+
+void getAiMove(int p_boardState[3][3], bool p_PlayerTurn)
+{
+    struct node currentNode;
+    
+    copyBoardState(p_boardState, currentNode.m_boardState);
+
+    miniMax(p_boardState, &currentNode, p_PlayerTurn, 0);
+}
 
 // clear();
-    
-// printTable(p_npTable);
-// mvprintw(0, 0, "The game ended in a DRAW");  
-
+// printTable(p_BackendTable);
+// int score = scoreTheState(p_BackendTable);
+// mvprintw(0, 1, "current score: ");
+// printw("%d", score);  
 // refresh();
+// waitForInput();

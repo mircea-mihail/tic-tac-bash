@@ -12,7 +12,7 @@ int checkWinCondition(int npTable[3][3]);
 // checks if the player pressed Q and returns true if so, false otherwise
 bool checkExit(int nUserInput);
 
-// return strue if the game ended in a draw and false otherwise
+// returns true if the game ended in a draw and false otherwise
 bool checkDraw(int p_npTable[3][3]);
 
 // prints the winner and returns true if someone won
