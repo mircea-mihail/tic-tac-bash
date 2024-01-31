@@ -161,6 +161,19 @@ void setFirstFreeSpot(int p_boardState[3][3], bool p_turn)
     }   
 }
 
+void debugPrintTable(int table[3][3])
+{
+    mvprintw(2, 0, " ");
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            printw("%d ", table[i][j]);
+        }
+        printw("\n");
+    }
+}
+
 void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
 {
     if(p_turn == MAX)
@@ -234,6 +247,17 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
         }
 
         p_boardState[bestPosOX][bestPosOY] = ZERO;
+
+
+        // this is very interesting, shows the reasoning behind the ai choices and where each decision would have led
+        // clear();
+        // printTable(p_boardState);
+        // int score = scoreTheState(p_boardState);
+        // mvprintw(0, 1, "current score: ");
+        // printw("%d", score);  
+        // debugPrintTable(scores);
+        // refresh();
+        // waitForInput();
     }
 }
 
@@ -317,20 +341,6 @@ void getAiMove(int p_boardState[3][3], bool p_PlayerTurn)
     copyBoardState(p_boardState, currentNode.m_boardState);
     miniMax(p_boardState, &currentNode, p_PlayerTurn, 0);
 }
-
-
-// void debugPrintTable(int table[3][3])
-// {
-//     mvprintw(2, 0, " ");
-//     for(int i = 0; i < 3; i++)
-//     {
-//         for(int j = 0; j < 3; j++)
-//         {
-//             printw("%d ", table[i][j]);
-//         }
-//         printw("\n");
-//     }
-// }
 
 // clear();
 // printTable(p_BackendTable);
