@@ -4,6 +4,10 @@
 
 #include "gameLogic.h"
 #include "printing.h"
+#include "ai.h"
+
+#define X_TURN 0
+#define Z_TURN 1 // zero = true
 
 void initCurses()
 {
@@ -34,7 +38,7 @@ void initCurses()
     // printf("\033[?1003h\n"); // Makes the terminal report mouse movement events
 }
 
-void setAiVariables(int p_argc, char *p_argv[], bool *p_playWithX, bool *p_aiEnabled)
+void setAiVariables(int p_argc, char *p_argv[], bool *p_playWith0, bool *p_aiEnabled)
 {
     if(p_argc > 1)
     {
@@ -46,11 +50,11 @@ void setAiVariables(int p_argc, char *p_argv[], bool *p_playWithX, bool *p_aiEna
             }
             if(strcmp(p_argv[1],"-x") == 0 || strcmp(p_argv[2],"-x") == 0)
             {
-                *p_playWithX = true;
+                *p_playWith0 = false;
             }   
             if(strcmp(p_argv[1],"-0") == 0 || strcmp(p_argv[2],"-0") == 0)
             {
-                *p_playWithX = false;
+                *p_playWith0 = true;
             }   
         }
         else if(strcmp(p_argv[1],"-ai") == 0)
@@ -62,16 +66,13 @@ void setAiVariables(int p_argc, char *p_argv[], bool *p_playWithX, bool *p_aiEna
 
 int main(int argc, char *argv[])
 {
-    bool playWithX = true;
+    bool playWith0 = true;
     bool aiEnabled = false;
 
-    setAiVariables(argc, argv, &playWithX, &aiEnabled);
+    setAiVariables(argc, argv, &playWith0, &aiEnabled);
 
-    printf("ai %d, x %d", aiEnabled, playWithX);
-    return 0;
-
-    bool bExit = 0;
-    bool bPlayerTurn = 0;
+    bool bExit = false;
+    bool bPlayerTurn = X_TURN;
     int nUserInput;	
     int npBackendTable[3][3] = { 
                     {0, 0, 0},
@@ -91,7 +92,12 @@ int main(int argc, char *argv[])
         // wait for user input
         nUserInput = getch();		
         
-        updateTable(npBackendTable, nUserInput, &bPlayerTurn);
+        bool successfulUpdate = updateTable(npBackendTable, nUserInput, &bPlayerTurn);
+        if(aiEnabled && successfulUpdate && bPlayerTurn == playWith0)
+        {
+            getAiMove(npBackendTable, bPlayerTurn);
+            bPlayerTurn = !bPlayerTurn;
+        }
 
         bExit = checkExit(nUserInput) || printWinner(npBackendTable) || printDraw(npBackendTable);
     }

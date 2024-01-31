@@ -42,7 +42,7 @@ bool checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
     return false;
 }
 
-void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
+bool updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
 {
     switch(nUserInput)
     { 
@@ -50,65 +50,66 @@ void updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
             if(npTable[0][0] == 0)
                 npTable[0][0] = *bpPlayerTurn ? ZERO : EX; 
             else
-                return;
+                return false;
             break;
         case 'w': 
             if(npTable[0][1] == 0)
                 npTable[0][1] = *bpPlayerTurn ? ZERO : EX; 
             else
-                return;
+                return false;
             break;
         case 'e':
             if(npTable[0][2] == 0) 
                 npTable[0][2] = *bpPlayerTurn ? ZERO : EX; 
             else
-                return;
+                return false;
             break;
         case 'a': 
             if(npTable[1][0] == 0)
                 npTable[1][0] = *bpPlayerTurn ? ZERO : EX; 
             else
-                return;
+                return false;
             break;
         case 's': 
             if(npTable[1][1] == 0)
                 npTable[1][1] = *bpPlayerTurn ? ZERO : EX; 
             else
-                return;
+                return false;
             break;
         case 'd':
             if(npTable[1][2] == 0) 
                 npTable[1][2] = *bpPlayerTurn ? ZERO : EX; 
             else
-                return;
+                return false;
             break;
         case 'z': 
             if(npTable[2][0] == 0)
                 npTable[2][0] = *bpPlayerTurn ? ZERO : EX; 
             else
-                return;
+                return false;
             break;
         case 'x': 
             if(npTable[2][1] == 0)
                 npTable[2][1] = *bpPlayerTurn ? ZERO : EX; 
             else  
-                return;
+                return false;
             break;
         case 'c': 
             if(npTable[2][2] == 0)
                 npTable[2][2] = *bpPlayerTurn ? ZERO : EX; 
             else
-                return;
+                return false;
             break;
         default: 
             if(!checkMouse(npTable, nUserInput, bpPlayerTurn))
             {
-                return;
+                return false;
             }
             break;
     }
 
     *bpPlayerTurn = !(*bpPlayerTurn);
+    return true;
 }
 
 // returns the winning player
