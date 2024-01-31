@@ -132,7 +132,7 @@ int checkWinCondition(int p_npTable[3][3])
 
     for(int i = 0; i < 2; i++)
     {
-        winCondition = winCondition && (p_npTable[i][2-i] == p_npTable[i+1][2-(i+1)]) && (p_npTable[i][i] != 0);
+        winCondition = winCondition && (p_npTable[i][2-i] == p_npTable[i+1][2-(i+1)]) && (p_npTable[i][2-i] != 0);
     }
     if(winCondition)
     {
