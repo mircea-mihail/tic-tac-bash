@@ -11,7 +11,7 @@
 
 #define DEFAULT_INPUT_VALUE 0
 
-enum menuOptions{multiPlayer, singlePlayer};
+enum menuOptions{multiPlayer, singlePlayer, exitGame};
 enum aiMenuOptions{playWithX, playWith0, aiDifficulty};
 
 void initCurses()
@@ -153,6 +153,7 @@ void enterAiMenu(bool *isAi0)
                     changedState = true;
                     input = DEFAULT_INPUT_VALUE;
                 }
+
                 if(input == '\n' || input == ' ')
                 {
                     *isAi0 = false;
@@ -224,17 +225,25 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
                     clear();
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
-                    mvprintw(rows/2-2, cols/2-9, "Play with a friend\n");
+                    mvprintw(rows/2-2, cols/2-9, "Play with a friend");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
-                    mvprintw(rows/2-1, cols/2-9, "Play against the AI\n");
+                    mvprintw(rows/2-1, cols/2-9, "Play against the AI");
+                    mvprintw(rows/2, cols/2-9, "Exit");
                     refresh();
                     changedState = false;
                 }
 
-                if(input == 'w' || input == KEY_UP || input == 's' || input == KEY_DOWN)
+                if(input == 'w' || input == KEY_UP)
                 {
-                    menuOptionSelected = singlePlayer;
+                    menuOptionSelected = exitGame;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % 3;
                     changedState = true;
                     input = DEFAULT_INPUT_VALUE;
                 }
@@ -251,19 +260,27 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
                 if(changedState)
                 {
                     clear();
-                    mvprintw(rows/2-2, cols/2-9, "Play with a friend\n");
+                    mvprintw(rows/2-2, cols/2-9, "Play with a friend");
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
-                    mvprintw(rows/2-1, cols/2-9, "Play against the AI\n");
+                    mvprintw(rows/2-1, cols/2-9, "Play against the AI");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
+                    mvprintw(rows/2, cols/2-9, "Exit");
                     refresh();
                     changedState = false;
                 }
 
-                if(input == 'w' || input == KEY_UP || input == 's' || input == KEY_DOWN)
+                if(input == 'w' || input == KEY_UP)
                 {
-                    menuOptionSelected = multiPlayer;
+                    menuOptionSelected = (menuOptionSelected - 1) % 3;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % 3;
                     changedState = true;
                     input = DEFAULT_INPUT_VALUE;
                 }
@@ -272,6 +289,42 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
                 {
                     *aiEnabled = true;
                     inMainMenu = false;
+                }
+
+                break;
+            
+            case exitGame:
+                if(changedState)
+                {
+                    clear();
+                    mvprintw(rows/2-2, cols/2-9, "Play with a friend");
+                    mvprintw(rows/2-1, cols/2-9, "Play against the AI");
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2, cols/2-9, "Exit");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP)
+                {
+                    menuOptionSelected = (menuOptionSelected - 1) % 3;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+
+                if(input == '\n' || input == ' ')
+                {
+                    return true;
                 }
 
                 break;
