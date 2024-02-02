@@ -200,7 +200,7 @@ void enterAiMenu(bool *isAi0)
     }
 }
 
-void selectGameMode(bool *isAi0, bool *aiEnabled)
+bool selectGameMode(bool *isAi0, bool *aiEnabled)
 {
     bool changedState = true;
     bool inMainMenu = true;
@@ -282,6 +282,19 @@ void selectGameMode(bool *isAi0, bool *aiEnabled)
     {
         enterAiMenu(isAi0);
     }
+
+    return false;
+}
+
+void clearTable(int table[3][3])
+{
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            table[i][j] = 0;
+        }
+    }
 }
 
 int main()
@@ -301,8 +314,7 @@ int main()
 
     initCurses();
 
-    selectGameMode(&isAi0, &aiEnabled);
-
+    bExit = selectGameMode(&isAi0, &aiEnabled);
     if(aiEnabled && isAi0 == false)
     {
         getAiMove(npBackendTable, bPlayerTurn);
@@ -327,6 +339,19 @@ int main()
         }
 
         bExit = checkExit(nUserInput) || printWinner(npBackendTable) || printDraw(npBackendTable);
+        
+        if(bExit)
+        {
+            bExit = selectGameMode(&isAi0, &aiEnabled);
+            clearTable(npBackendTable);
+            bPlayerTurn = X_TURN;
+
+            if(aiEnabled && isAi0 == false)
+            {
+                getAiMove(npBackendTable, bPlayerTurn);
+                bPlayerTurn = !bPlayerTurn;
+            }
+        }
     }
     // End curses mode
     endwin();			
