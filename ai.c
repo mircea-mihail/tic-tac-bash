@@ -247,18 +247,17 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
         }
 
         p_boardState[bestPosOX][bestPosOY] = ZERO;
-
-
-        // this is very interesting, shows the reasoning behind the ai choices and where each decision would have led
-        // clear();
-        // printTable(p_boardState);
-        // int score = scoreTheState(p_boardState);
-        // mvprintw(0, 1, "current score: ");
-        // printw("%d", score);  
-        // debugPrintTable(scores);
-        // refresh();
-        // waitForInput();
     }
+
+    // this is very interesting, shows the reasoning behind the ai choices and where each decision would have led
+    // clear();
+    // printTable(p_boardState);
+    // int score = scoreTheState(p_boardState);
+    // mvprintw(0, 1, "current score: ");
+    // printw("%d", score);  
+    // debugPrintTable(scores);
+    // refresh();
+    // waitForInput();
 }
 
 void copyBoardState(int p_originalBoardState[3][3], int p_newBoardState[3][3])

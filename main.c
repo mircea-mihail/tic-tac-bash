@@ -38,7 +38,7 @@ void initCurses()
     // printf("\033[?1003h\n"); // Makes the terminal report mouse movement events
 }
 
-void setAiVariables(int p_argc, char *p_argv[], bool *p_playWith0, bool *p_aiEnabled)
+void setAiVariables(int p_argc, char *p_argv[], bool *isAiX, bool *p_aiEnabled)
 {
     if(p_argc > 1)
     {
@@ -50,11 +50,11 @@ void setAiVariables(int p_argc, char *p_argv[], bool *p_playWith0, bool *p_aiEna
             }
             if(strcmp(p_argv[1],"-x") == 0 || strcmp(p_argv[2],"-x") == 0)
             {
-                *p_playWith0 = false;
+                *isAiX = true;
             }   
             if(strcmp(p_argv[1],"-0") == 0 || strcmp(p_argv[2],"-0") == 0)
             {
-                *p_playWith0 = true;
+                *isAiX = false;
             }   
         }
         else if(strcmp(p_argv[1],"-ai") == 0)
@@ -66,10 +66,10 @@ void setAiVariables(int p_argc, char *p_argv[], bool *p_playWith0, bool *p_aiEna
 
 int main(int argc, char *argv[])
 {
-    bool playWith0 = true;
+    bool isAiX = true;
     bool aiEnabled = false;
 
-    setAiVariables(argc, argv, &playWith0, &aiEnabled);
+    setAiVariables(argc, argv, &isAiX, &aiEnabled);
 
     bool bExit = false;
     bool bPlayerTurn = X_TURN;
@@ -82,6 +82,12 @@ int main(int argc, char *argv[])
 
     initCurses();
 
+    if(aiEnabled && isAiX == false)
+    {
+        getAiMove(npBackendTable, bPlayerTurn);
+        bPlayerTurn = !bPlayerTurn;
+    }
+
     while(!bExit)
     {
         clear();
@@ -93,7 +99,7 @@ int main(int argc, char *argv[])
         nUserInput = getch();		
         
         bool successfulUpdate = updateTable(npBackendTable, nUserInput, &bPlayerTurn);
-        if(aiEnabled && successfulUpdate && bPlayerTurn == playWith0)
+        if(aiEnabled && successfulUpdate && bPlayerTurn == isAiX)
         {
             getAiMove(npBackendTable, bPlayerTurn);
             bPlayerTurn = !bPlayerTurn;
