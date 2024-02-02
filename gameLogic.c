@@ -203,12 +203,19 @@ bool printWinner(int p_npTable[3][3])
     {
         clear();
         printTable(p_npTable);
-        mvprintw(0, 0, "the winner is %c", nWinner == 1 ? '0' : 'X' );
         
+        int rows, cols;
+        getmaxyx(stdscr, rows, cols);
+
+        attron(COLOR_PAIR(RED_WHITE_PAIR));
+        attron(A_BOLD);
+        mvprintw(1, cols/2-2, "%c WON", nWinner == 1 ? '0' : 'X' );
+        attroff(COLOR_PAIR(RED_WHITE_PAIR));
+        attroff(A_BOLD);
+
         refresh();
 
         waitForInput();
-
         return true;
     }
     return false;
@@ -236,14 +243,20 @@ bool printDraw(int p_npTable[3][3])
     if(bWasDraw)
     {
         clear();
-        
         printTable(p_npTable);
-        mvprintw(0, 0, "The game ended in a DRAW");  
 
+        int rows, cols;
+        getmaxyx(stdscr, rows, cols);
+        
+        attron(COLOR_PAIR(RED_WHITE_PAIR));
+        attron(A_BOLD);
+        mvprintw(1, cols/2-2, "DRAW");  
+        attroff(COLOR_PAIR(RED_WHITE_PAIR));
+        attroff(A_BOLD);
+        
         refresh();
 
         waitForInput();
-
         return true;
     }
     return false;    
