@@ -64,12 +64,71 @@ void setAiVariables(int p_argc, char *p_argv[], bool *isAiX, bool *p_aiEnabled)
     }
 }
 
+#define DEFAULT_INPUT_VALUE 0
+enum menuOptions{multiPlayer, singlePlayer, playWithX, playWith0};
+
+void selectGameMode()
+{
+    bool passGetch = false;
+    bool passedOnce = false;
+    bool changedState = true;
+    bool inMainMenu = true;
+    int menuOptionSelected = multiPlayer;
+    int input = DEFAULT_INPUT_VALUE; 
+
+    while(inMainMenu)
+    {
+        if(!changedState)
+        {
+            input = getch();
+        }
+
+        switch(menuOptionSelected)
+        {
+            case multiPlayer:
+                if(changedState)
+                {
+                    clear();
+                    mvprintw(0, 0, "in multi player");
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP || input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = singlePlayer;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+
+                break;
+
+            case singlePlayer:
+                if(changedState)
+                {
+                    clear();
+                    mvprintw(0, 0, "in single player");
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP || input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = multiPlayer;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+
+                break;
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
     bool isAiX = true;
     bool aiEnabled = false;
-
-    setAiVariables(argc, argv, &isAiX, &aiEnabled);
+    // setAiVariables(argc, argv, &isAiX, &aiEnabled);
 
     bool bExit = false;
     bool bPlayerTurn = X_TURN;
@@ -81,6 +140,8 @@ int main(int argc, char *argv[])
                 };
 
     initCurses();
+
+    selectGameMode();
 
     if(aiEnabled && isAiX == false)
     {
