@@ -11,6 +11,7 @@
 #define MAGENTA_PAIR 6
 #define CYAN_PAIR 7 
 #define WHITE_PAIR 8
+#define RED_WHITE_PAIR 9
 
 #define min(a, b) (a < b ? a : b)
 

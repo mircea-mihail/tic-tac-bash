@@ -12,6 +12,7 @@ void dealWithColors()
     init_pair(MAGENTA_PAIR, COLOR_MAGENTA, COLOR_MAGENTA);
     init_pair(CYAN_PAIR, COLOR_CYAN, COLOR_CYAN);
     init_pair(WHITE_PAIR, COLOR_WHITE, COLOR_WHITE);
+    init_pair(RED_WHITE_PAIR, COLOR_BLACK, COLOR_RED);
 
     use_default_colors(); //keeps my background transparrent 
 }

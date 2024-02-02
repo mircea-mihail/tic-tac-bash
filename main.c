@@ -9,6 +9,10 @@
 #define X_TURN 0
 #define Z_TURN 1 // zero = true
 
+#define DEFAULT_INPUT_VALUE 0
+
+enum menuOptions{multiPlayer, singlePlayer, playWithX, playWith0};
+
 void initCurses()
 {
     // Start curses mode
@@ -64,13 +68,13 @@ void setAiVariables(int p_argc, char *p_argv[], bool *isAiX, bool *p_aiEnabled)
     }
 }
 
-#define DEFAULT_INPUT_VALUE 0
-enum menuOptions{multiPlayer, singlePlayer, playWithX, playWith0};
-
-void selectGameMode()
+void enterAiMenu(bool *isAiX)
 {
-    bool passGetch = false;
-    bool passedOnce = false;
+    
+}
+
+void selectGameMode(bool *isAiX, bool *aiEnabled)
+{
     bool changedState = true;
     bool inMainMenu = true;
     int menuOptionSelected = multiPlayer;
@@ -78,6 +82,8 @@ void selectGameMode()
 
     while(inMainMenu)
     {
+        int rows, cols;
+        getmaxyx(stdscr, rows, cols);
         if(!changedState)
         {
             input = getch();
@@ -89,7 +95,12 @@ void selectGameMode()
                 if(changedState)
                 {
                     clear();
-                    mvprintw(0, 0, "in multi player");
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2-1, cols/2 - 9, "Play with a friend\n");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+                    mvprintw(rows/2, cols/2 - 9, "Play against the AI\n");
                     refresh();
                     changedState = false;
                 }
@@ -101,13 +112,24 @@ void selectGameMode()
                     input = DEFAULT_INPUT_VALUE;
                 }
 
+                if(input == '\n' || input == KEY_MOUSE || input == ' ')
+                {
+                    aiEnabled = false;
+                    inMainMenu = false;
+                }
+
                 break;
 
             case singlePlayer:
                 if(changedState)
                 {
                     clear();
-                    mvprintw(0, 0, "in single player");
+                    mvprintw(rows/2 - 1, cols/2 - 9, "Play with a friend\n");
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2, cols/2 - 9, "Play against the AI\n");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
                     refresh();
                     changedState = false;
                 }
@@ -119,16 +141,27 @@ void selectGameMode()
                     input = DEFAULT_INPUT_VALUE;
                 }
 
+                if(input == '\n' || input == KEY_MOUSE || input == ' ')
+                {
+                    aiEnabled = true;
+                    inMainMenu = false;
+                }
+
                 break;
         }
     }
+
+    if(aiEnabled)
+    {
+        enterAiMenu(isAiX);
+    }
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     bool isAiX = true;
     bool aiEnabled = false;
-    // setAiVariables(argc, argv, &isAiX, &aiEnabled);
+    // setAiVariables(argc, argv, );
 
     bool bExit = false;
     bool bPlayerTurn = X_TURN;
@@ -141,7 +174,7 @@ int main(int argc, char *argv[])
 
     initCurses();
 
-    selectGameMode();
+    selectGameMode(&isAiX, &aiEnabled);
 
     if(aiEnabled && isAiX == false)
     {
