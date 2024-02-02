@@ -11,7 +11,8 @@
 
 #define DEFAULT_INPUT_VALUE 0
 
-enum menuOptions{multiPlayer, singlePlayer, playWithX, playWith0};
+enum menuOptions{multiPlayer, singlePlayer};
+enum aiMenuOptions{playWithX, playWith0, aiDifficulty};
 
 void initCurses()
 {
@@ -42,7 +43,7 @@ void initCurses()
     // printf("\033[?1003h\n"); // Makes the terminal report mouse movement events
 }
 
-void setAiVariables(int p_argc, char *p_argv[], bool *isAiX, bool *p_aiEnabled)
+void setAiVariables(int p_argc, char *p_argv[], bool *isAi0, bool *p_aiEnabled)
 {
     if(p_argc > 1)
     {
@@ -54,11 +55,11 @@ void setAiVariables(int p_argc, char *p_argv[], bool *isAiX, bool *p_aiEnabled)
             }
             if(strcmp(p_argv[1],"-x") == 0 || strcmp(p_argv[2],"-x") == 0)
             {
-                *isAiX = true;
+                *isAi0 = true;
             }   
             if(strcmp(p_argv[1],"-0") == 0 || strcmp(p_argv[2],"-0") == 0)
             {
-                *isAiX = false;
+                *isAi0 = false;
             }   
         }
         else if(strcmp(p_argv[1],"-ai") == 0)
@@ -68,12 +69,138 @@ void setAiVariables(int p_argc, char *p_argv[], bool *isAiX, bool *p_aiEnabled)
     }
 }
 
-void enterAiMenu(bool *isAiX)
+void enterAiMenu(bool *isAi0)
 {
-    
+    bool changedState = true;
+    bool inAiMenu = true;
+    int input;
+    int menuOptionSelected = playWithX;
+
+    while(inAiMenu)
+    {
+        int rows, cols;
+        getmaxyx(stdscr, rows, cols);
+
+        if(!changedState)
+        {
+            input = getch();
+        }
+
+        switch(menuOptionSelected)
+        {
+            case playWithX:
+                if(changedState)
+                {
+                    clear();
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2-2, cols/2 - 9, "Play with X");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+                    mvprintw(rows/2-1, cols/2 - 9, "Play with 0");
+                    mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP)
+                {
+                    menuOptionSelected = aiDifficulty;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+
+                if(input == '\n' || input == ' ')
+                {
+                    *isAi0 = true;
+                    inAiMenu = false;
+                }
+
+                break;
+
+            case playWith0:
+                if(changedState)
+                {
+                    clear();
+                    mvprintw(rows/2-2, cols/2 - 9, "Play with X");
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2-1, cols/2 - 9, "Play with 0");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+                    mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP)
+                {
+                    menuOptionSelected = (menuOptionSelected - 1) % 3;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+                if(input == '\n' || input == ' ')
+                {
+                    *isAi0 = false;
+                    inAiMenu = false;
+                }
+
+                break;
+            
+            case aiDifficulty:
+                if(changedState)
+                {
+                    clear();
+                    mvprintw(rows/2-2, cols/2 - 9, "Play with X");
+                    mvprintw(rows/2-1, cols/2 - 9, "Play with 0");
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP)
+                {
+                    menuOptionSelected = (menuOptionSelected - 1) % 3;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }
+
+                if(input == '\n' || input == ' ')
+                {
+
+                }
+
+                break;
+        }
+    }
 }
 
-void selectGameMode(bool *isAiX, bool *aiEnabled)
+void selectGameMode(bool *isAi0, bool *aiEnabled)
 {
     bool changedState = true;
     bool inMainMenu = true;
@@ -97,10 +224,10 @@ void selectGameMode(bool *isAiX, bool *aiEnabled)
                     clear();
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
-                    mvprintw(rows/2-1, cols/2 - 9, "Play with a friend\n");
+                    mvprintw(rows/2-2, cols/2-9, "Play with a friend\n");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
-                    mvprintw(rows/2, cols/2 - 9, "Play against the AI\n");
+                    mvprintw(rows/2-1, cols/2-9, "Play against the AI\n");
                     refresh();
                     changedState = false;
                 }
@@ -112,9 +239,9 @@ void selectGameMode(bool *isAiX, bool *aiEnabled)
                     input = DEFAULT_INPUT_VALUE;
                 }
 
-                if(input == '\n' || input == KEY_MOUSE || input == ' ')
+                if(input == '\n' || input == ' ')
                 {
-                    aiEnabled = false;
+                    *aiEnabled = false;
                     inMainMenu = false;
                 }
 
@@ -124,10 +251,10 @@ void selectGameMode(bool *isAiX, bool *aiEnabled)
                 if(changedState)
                 {
                     clear();
-                    mvprintw(rows/2 - 1, cols/2 - 9, "Play with a friend\n");
+                    mvprintw(rows/2-2, cols/2-9, "Play with a friend\n");
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
-                    mvprintw(rows/2, cols/2 - 9, "Play against the AI\n");
+                    mvprintw(rows/2-1, cols/2-9, "Play against the AI\n");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
                     refresh();
@@ -141,9 +268,9 @@ void selectGameMode(bool *isAiX, bool *aiEnabled)
                     input = DEFAULT_INPUT_VALUE;
                 }
 
-                if(input == '\n' || input == KEY_MOUSE || input == ' ')
+                if(input == '\n' || input == ' ')
                 {
-                    aiEnabled = true;
+                    *aiEnabled = true;
                     inMainMenu = false;
                 }
 
@@ -151,15 +278,15 @@ void selectGameMode(bool *isAiX, bool *aiEnabled)
         }
     }
 
-    if(aiEnabled)
+    if(*aiEnabled)
     {
-        enterAiMenu(isAiX);
+        enterAiMenu(isAi0);
     }
 }
 
 int main()
 {
-    bool isAiX = true;
+    bool isAi0 = true;
     bool aiEnabled = false;
     // setAiVariables(argc, argv, );
 
@@ -174,9 +301,9 @@ int main()
 
     initCurses();
 
-    selectGameMode(&isAiX, &aiEnabled);
+    selectGameMode(&isAi0, &aiEnabled);
 
-    if(aiEnabled && isAiX == false)
+    if(aiEnabled && isAi0 == false)
     {
         getAiMove(npBackendTable, bPlayerTurn);
         bPlayerTurn = !bPlayerTurn;
@@ -193,7 +320,7 @@ int main()
         nUserInput = getch();		
         
         bool successfulUpdate = updateTable(npBackendTable, nUserInput, &bPlayerTurn);
-        if(aiEnabled && successfulUpdate && bPlayerTurn == isAiX)
+        if(aiEnabled && successfulUpdate && bPlayerTurn == isAi0)
         {
             getAiMove(npBackendTable, bPlayerTurn);
             bPlayerTurn = !bPlayerTurn;
