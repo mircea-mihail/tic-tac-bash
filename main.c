@@ -10,6 +10,7 @@
 #define X_TURN 0
 #define Z_TURN 1 // zero = true
 
+#define VALID_MENU_INPUTS 6
 #define DEFAULT_INPUT_VALUE 0
 
 enum menuOptions{multiPlayer, singlePlayer, exitGame};
@@ -72,6 +73,7 @@ void setAiVariables(int p_argc, char *p_argv[], bool *isAi0, bool *p_aiEnabled)
 
 void enterAiMenu(bool *isAi0)
 {
+    int validInputs[VALID_MENU_INPUTS] = {'\n', ' ', 'w', 's', KEY_UP, KEY_DOWN};
     bool displayDiffSubmenu = false;
     bool changedState = true;
     bool inAiMenu = true;
@@ -123,15 +125,11 @@ void enterAiMenu(bool *isAi0)
                 if(input == 'w' || input == KEY_UP)
                 {
                     menuOptionSelected = aiDifficulty;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
 
                 if(input == 's' || input == KEY_DOWN)
                 {
                     menuOptionSelected = (menuOptionSelected + 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -158,15 +156,11 @@ void enterAiMenu(bool *isAi0)
                 if(input == 'w' || input == KEY_UP)
                 {
                     menuOptionSelected = (menuOptionSelected - 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
                     menuOptionSelected = (menuOptionSelected + 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -193,31 +187,37 @@ void enterAiMenu(bool *isAi0)
                 if(input == 'w' || input == KEY_UP)
                 {
                     menuOptionSelected = (menuOptionSelected - 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
                     menuOptionSelected = (menuOptionSelected + 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
 
                 if(input == '\n' || input == ' ')
                 {
                     displayDiffSubmenu = !displayDiffSubmenu;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }   
 
                 break;
+        }
+        
+        // must be done after each valid input
+        for(int i = 0; i < VALID_MENU_INPUTS; i++)
+        {
+            if(validInputs[i] == input)
+            {
+                changedState = true;
+                input = DEFAULT_INPUT_VALUE;
+            }
         }
     }
 }
 
 bool selectGameMode(bool *isAi0, bool *aiEnabled)
 {
+    int validInputs[VALID_MENU_INPUTS] = {'\n', ' ', 'w', 's', KEY_UP, KEY_DOWN};
+    
     bool changedState = true;
     bool inMainMenu = true;
     int menuOptionSelected = multiPlayer;
@@ -259,15 +259,11 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
                 if(input == 'w' || input == KEY_UP)
                 {
                     menuOptionSelected = exitGame;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
                     menuOptionSelected = (menuOptionSelected + 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -294,15 +290,11 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
                 if(input == 'w' || input == KEY_UP)
                 {
                     menuOptionSelected = (menuOptionSelected - 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
                     menuOptionSelected = (menuOptionSelected + 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -329,15 +321,11 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
                 if(input == 'w' || input == KEY_UP)
                 {
                     menuOptionSelected = (menuOptionSelected - 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
                     menuOptionSelected = (menuOptionSelected + 1) % 3;
-                    changedState = true;
-                    input = DEFAULT_INPUT_VALUE;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -347,6 +335,17 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
 
                 break;
         }
+
+        // must be done after each valid input
+        for(int i = 0; i < VALID_MENU_INPUTS; i++)
+        {
+            if(validInputs[i] == input)
+            {
+                changedState = true;
+                input = DEFAULT_INPUT_VALUE;
+            }
+        }
+
     }
 
     if(*aiEnabled)
