@@ -6,6 +6,7 @@
 #define MIN true
 #define MAX false
 
+#define EMPTY 0
 #define ZERO 1
 #define EX 2  
 

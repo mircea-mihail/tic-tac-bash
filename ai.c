@@ -23,17 +23,34 @@ int getScoreFromChecker(int checker)
     return 0;
 }
 
+// counts the number of 0s and returns it. This way, wins that lead to the least amount of moves are prioritised
+int scoreWinningState(int p_boardState[3][3])
+{
+    int score = 0; 
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            if(p_boardState[i][j] == EMPTY)
+            {
+                score ++;
+            }
+        }
+    }
+    return score;
+}
+
 int scoreTheState(int p_boardState[3][3])
 {
     int winner = checkWinCondition(p_boardState);
             
     if(winner == EX)
     {
-        return MAX_SCORE;
+        return MAX_SCORE + scoreWinningState(p_boardState);
     }
     if(winner == ZERO)
     {
-        return MIN_SCORE;
+        return MIN_SCORE - scoreWinningState(p_boardState);
     }
 
     int score = 0;
