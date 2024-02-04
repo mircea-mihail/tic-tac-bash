@@ -37,6 +37,7 @@ int scoreWinningState(int p_boardState[3][3])
             }
         }
     }
+
     return score;
 }
 
@@ -50,7 +51,7 @@ int scoreTheState(int p_boardState[3][3])
     }
     if(winner == ZERO)
     {
-        return MIN_SCORE - scoreWinningState(p_boardState);
+        return MIN_SCORE + scoreWinningState(p_boardState);
     }
 
     int score = 0;
@@ -340,12 +341,10 @@ void setTable(int p_scores[3][3], int p_boardState[3][3], bool p_turn)
         p_boardState[bestPosOX][bestPosOY] = ZERO;
     }
 
-    // this is very interesting, shows the reasoning behind the ai choices and where each decision would have led
+    // debug
     // clear();
     // printTable(p_boardState);
     // int score = scoreTheState(p_boardState);
-    // mvprintw(0, 1, "nodes generated: %lld", nodesGenerated);
-    // printw("%d", score);  
     // debugPrintTable(p_scores);
     // refresh();
     // waitForInput();
@@ -373,11 +372,11 @@ int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth
     int winner = checkWinCondition(p_node->m_boardState);  
     if(winner == EX)
     {
-        return MAX_SCORE;
+        return MAX_SCORE + scoreWinningState(p_node->m_boardState);
     }
     if(winner == ZERO)
     {
-        return MIN_SCORE;
+        return MIN_SCORE - scoreWinningState(p_node->m_boardState);
     }
     if(checkDraw(p_node->m_boardState))
     {

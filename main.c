@@ -72,6 +72,7 @@ void setAiVariables(int p_argc, char *p_argv[], bool *isAi0, bool *p_aiEnabled)
 
 void enterAiMenu(bool *isAi0)
 {
+    bool displayDiffSubmenu = false;
     bool changedState = true;
     bool inAiMenu = true;
     int input;
@@ -87,19 +88,34 @@ void enterAiMenu(bool *isAi0)
             input = getch();
         }
 
+        if(changedState)
+        {
+            clear();
+            mvprintw(rows/2-2, cols/2 - 9, "Play with X");
+            mvprintw(rows/2-1, cols/2 - 9, "Play with 0");
+            mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
+
+            if(displayDiffSubmenu)
+            {
+                mvprintw(rows/2+1, cols/2 - 7, "easy");
+                mvprintw(rows/2+2, cols/2 - 7, "medium");
+                mvprintw(rows/2+3, cols/2 - 7, "hard");
+                mvprintw(rows/2+4, cols/2 - 7, "impossible");
+            }
+            refresh();
+        }
+
         switch(menuOptionSelected)
         {
             case playWithX:
                 if(changedState)
                 {
-                    clear();
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
                     mvprintw(rows/2-2, cols/2 - 9, "Play with X");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
-                    mvprintw(rows/2-1, cols/2 - 9, "Play with 0");
-                    mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
+                    
                     refresh();
                     changedState = false;
                 }
@@ -129,14 +145,12 @@ void enterAiMenu(bool *isAi0)
             case playWith0:
                 if(changedState)
                 {
-                    clear();
-                    mvprintw(rows/2-2, cols/2 - 9, "Play with X");
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
                     mvprintw(rows/2-1, cols/2 - 9, "Play with 0");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
-                    mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
+                    
                     refresh();
                     changedState = false;
                 }
@@ -166,14 +180,12 @@ void enterAiMenu(bool *isAi0)
             case aiDifficulty:
                 if(changedState)
                 {
-                    clear();
-                    mvprintw(rows/2-2, cols/2 - 9, "Play with X");
-                    mvprintw(rows/2-1, cols/2 - 9, "Play with 0");
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
                     mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
+
                     refresh();
                     changedState = false;
                 }
@@ -194,8 +206,10 @@ void enterAiMenu(bool *isAi0)
 
                 if(input == '\n' || input == ' ')
                 {
-
-                }
+                    displayDiffSubmenu = !displayDiffSubmenu;
+                    changedState = true;
+                    input = DEFAULT_INPUT_VALUE;
+                }   
 
                 break;
         }
@@ -217,20 +231,27 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
         {
             input = getch();
         }
+        
+        if(changedState)
+        {
+            clear();
+            mvprintw(rows/2-2, cols/2-9, "Play with a friend");
+            mvprintw(rows/2-1, cols/2-9, "Play against the AI");
+            mvprintw(rows/2, cols/2-9, "Exit");
+            refresh();
+        }
 
         switch(menuOptionSelected)
         {
             case multiPlayer:
                 if(changedState)
                 {
-                    clear();
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
                     mvprintw(rows/2-2, cols/2-9, "Play with a friend");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
-                    mvprintw(rows/2-1, cols/2-9, "Play against the AI");
-                    mvprintw(rows/2, cols/2-9, "Exit");
+
                     refresh();
                     changedState = false;
                 }
@@ -260,14 +281,12 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
             case singlePlayer:
                 if(changedState)
                 {
-                    clear();
-                    mvprintw(rows/2-2, cols/2-9, "Play with a friend");
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
                     mvprintw(rows/2-1, cols/2-9, "Play against the AI");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
-                    mvprintw(rows/2, cols/2-9, "Exit");
+
                     refresh();
                     changedState = false;
                 }
@@ -297,14 +316,12 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
             case exitGame:
                 if(changedState)
                 {
-                    clear();
-                    mvprintw(rows/2-2, cols/2-9, "Play with a friend");
-                    mvprintw(rows/2-1, cols/2-9, "Play against the AI");
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
                     mvprintw(rows/2, cols/2-9, "Exit");
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
+
                     refresh();
                     changedState = false;
                 }
