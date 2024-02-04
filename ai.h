@@ -12,7 +12,7 @@
 #define RANDOM_BEST_MOVE 1
 
 #define MAX_CHILDREN 9 // 9 possible empty table positions
-#define MAX_DEPTH 10000
+#define MAX_DEPTH 10 // not possible to go deeper
 
 #define MAX_SCORE 100
 #define MIN_SCORE -100
@@ -24,7 +24,7 @@ struct node
 };
 
 // generates the next move of the ai based on the mini max algorithm 
-void getAiMove(int p_BackendTable[3][3], bool p_bPlayerTurn);
+void getAiMove(int p_BackendTable[3][3], bool p_bPlayerTurn, int p_difficulty);
 
 // returns the score a state has by checking how many ways a symbol can win based on the board state. 
 // zero is min so for each way 0 can win you add -1 and X is max so for each way x can win you add 1

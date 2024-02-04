@@ -10,4 +10,9 @@
 #define ZERO 1
 #define EX 2  
 
+#define ROWS 3
+#define COLS 3
+
+enum aiDifficulty{easy, medium, hard, impossible};
+
 #endif

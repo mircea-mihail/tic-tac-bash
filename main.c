@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "usefulDefines.h"
 #include "gameLogic.h"
 #include "printing.h"
 #include "ai.h"
@@ -354,6 +355,7 @@ int main()
 {
     bool isAi0 = true;
     bool aiEnabled = false;
+    int difficulty = impossible;
     // setAiVariables(argc, argv, );
 
     bool bExit = false;
@@ -370,7 +372,7 @@ int main()
     bExit = selectGameMode(&isAi0, &aiEnabled);
     if(aiEnabled && isAi0 == false)
     {
-        getAiMove(npBackendTable, bPlayerTurn);
+        getAiMove(npBackendTable, bPlayerTurn, difficulty);
         bPlayerTurn = !bPlayerTurn;
     }
 
@@ -387,7 +389,7 @@ int main()
         bool successfulUpdate = updateTable(npBackendTable, nUserInput, &bPlayerTurn);
         if(aiEnabled && successfulUpdate && bPlayerTurn == isAi0)
         {
-            getAiMove(npBackendTable, bPlayerTurn);
+            getAiMove(npBackendTable, bPlayerTurn, difficulty);
             bPlayerTurn = !bPlayerTurn;
         }
 
@@ -401,7 +403,7 @@ int main()
 
             if(aiEnabled && isAi0 == false)
             {
-                getAiMove(npBackendTable, bPlayerTurn);
+                getAiMove(npBackendTable, bPlayerTurn, difficulty);
                 bPlayerTurn = !bPlayerTurn;
             }
         }

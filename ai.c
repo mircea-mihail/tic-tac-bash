@@ -344,7 +344,7 @@ void setTable(int p_scores[3][3], int p_boardState[3][3], bool p_turn)
     // clear();
     // printTable(p_boardState);
     // int score = scoreTheState(p_boardState);
-    // mvprintw(0, 1, "current score: ");
+    // mvprintw(0, 1, "nodes generated: %lld", nodesGenerated);
     // printw("%d", score);  
     // debugPrintTable(p_scores);
     // refresh();
@@ -425,11 +425,36 @@ int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth
     return 0;
 }
 
-void getAiMove(int p_boardState[3][3], bool p_PlayerTurn)
+void getAiMove(int p_boardState[3][3], bool p_PlayerTurn, int p_difficulty)
 {
+    int maxDepth;
+
+    switch (p_difficulty)
+    {
+        case easy: 
+            maxDepth = 1;
+            break;
+
+        case medium: 
+            maxDepth = 2;
+            break;
+
+        case hard: 
+            maxDepth = 4;
+            break;
+
+        case impossible:
+            maxDepth = MAX_DEPTH;
+            break;
+
+        default:
+            maxDepth = MAX_DEPTH;
+            break;
+    }
+
     struct node currentNode;
     copyBoardState(p_boardState, currentNode.m_boardState);
-    miniMax(p_boardState, &currentNode, p_PlayerTurn, 0, MAX_DEPTH);
+    miniMax(p_boardState, &currentNode, p_PlayerTurn, 0, maxDepth);
 }
 
 // clear();
