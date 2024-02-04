@@ -17,7 +17,6 @@ int getScoreFromChecker(int checker)
     return 0;
 }
 
-// counts the number of 0s and returns it. This way, wins that lead to the least amount of moves are prioritised
 int scoreWinningState(int p_boardState[ROWS][COLS])
 {
     int score = 0; 
@@ -155,9 +154,6 @@ int getMaxScore(int p_scores[ROWS][COLS])
     return maxScore;
 }
 
-// the only purpose of this function is to keep the ai bot functional 
-// if the worst is to come. So far there has been no point in which it was 
-// needed but it is here just in case
 void setFirstFreeSpot(int p_boardState[ROWS][COLS], bool p_turn)
 {
     for(int i = 0; i < ROWS; i++)
@@ -185,7 +181,6 @@ void debugPrintTable(int table[ROWS][COLS])
     }
 }
 
-// returns the number of same score positions and a mask with ones for the positons of the scores and zeros for everywhere else
 int getScorePositions(int p_scores[ROWS][COLS], int p_scoreVal, bool p_scorePosVector[ROWS][COLS])
 {
     int numberOfScores = 0;
