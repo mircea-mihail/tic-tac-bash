@@ -1,11 +1,5 @@
 #include "ai.h"
 
-#define X_BIT 1
-#define Z_BIT 2
-
-#define setCheckerX(checker) checker = checker | X_BIT
-#define setChecker0(checker) checker = checker | Z_BIT
-
 int getScoreFromChecker(int checker)
 {
     if((checker & X_BIT) && (checker & Z_BIT))
@@ -24,12 +18,12 @@ int getScoreFromChecker(int checker)
 }
 
 // counts the number of 0s and returns it. This way, wins that lead to the least amount of moves are prioritised
-int scoreWinningState(int p_boardState[3][3])
+int scoreWinningState(int p_boardState[ROWS][COLS])
 {
     int score = 0; 
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             if(p_boardState[i][j] == EMPTY)
             {
@@ -41,7 +35,7 @@ int scoreWinningState(int p_boardState[3][3])
     return score;
 }
 
-int scoreTheState(int p_boardState[3][3])
+int scoreTheState(int p_boardState[ROWS][COLS])
 {
     int winner = checkWinCondition(p_boardState);
             
@@ -61,7 +55,7 @@ int scoreTheState(int p_boardState[3][3])
     // set first bit of checker if found x and second bit of checker if found 0
     // if found both x and 0 don't do anything to the score
     int checker = 0;
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
         if(p_boardState[i][i] == EX)
         {   
@@ -76,13 +70,13 @@ int scoreTheState(int p_boardState[3][3])
     checker = 0;
 
     //check other diagonal
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        if(p_boardState[i][2-i] == EX)
+        if(p_boardState[i][ROWS-1-i] == EX)
         {   
             setCheckerX(checker);
         }
-        if(p_boardState[i][2-i] == ZERO)
+        if(p_boardState[i][ROWS-1-i] == ZERO)
         {
             setChecker0(checker);
         }
@@ -91,9 +85,9 @@ int scoreTheState(int p_boardState[3][3])
     checker = 0;
 
     //check columns
-    for(int j = 0; j < 3; j++)
+    for(int j = 0; j < ROWS; j++)
     {
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < COLS; i++)
         {
             if(p_boardState[j][i] == EX)
             {   
@@ -110,10 +104,9 @@ int scoreTheState(int p_boardState[3][3])
     
     //check rows
 
-    for(int j = 0; j < 3; j++)
+    for(int j = 0; j < COLS; j++)
     {
-
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < ROWS; i++)
         {
             if(p_boardState[i][j] == EX)
             {   
@@ -130,12 +123,12 @@ int scoreTheState(int p_boardState[3][3])
     return score;
 }
 
-int getMinScore(int p_scores[3][3])
+int getMinScore(int p_scores[ROWS][COLS])
 {
-    int minScore = MAX_SCORE;
-    for(int i = 0; i < 3; i++)
+    int minScore = MAX_INF;
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] <= minScore)
             {
@@ -146,12 +139,12 @@ int getMinScore(int p_scores[3][3])
     return minScore;
 }
 
-int getMaxScore(int p_scores[3][3])
+int getMaxScore(int p_scores[ROWS][COLS])
 {
-    int maxScore = MIN_SCORE;
-    for(int i = 0; i < 3; i++)
+    int maxScore = MIN_INF;
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] >= maxScore)
             {
@@ -165,11 +158,11 @@ int getMaxScore(int p_scores[3][3])
 // the only purpose of this function is to keep the ai bot functional 
 // if the worst is to come. So far there has been no point in which it was 
 // needed but it is here just in case
-void setFirstFreeSpot(int p_boardState[3][3], bool p_turn)
+void setFirstFreeSpot(int p_boardState[ROWS][COLS], bool p_turn)
 {
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             if(p_boardState[i][j] == 0)
             {
@@ -179,12 +172,12 @@ void setFirstFreeSpot(int p_boardState[3][3], bool p_turn)
     }   
 }
 
-void debugPrintTable(int table[3][3])
+void debugPrintTable(int table[ROWS][COLS])
 {
     mvprintw(2, 0, " ");
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             printw("%d ", table[i][j]);
         }
@@ -193,12 +186,12 @@ void debugPrintTable(int table[3][3])
 }
 
 // returns the number of same score positions and a mask with ones for the positons of the scores and zeros for everywhere else
-int getScorePositions(int p_scores[3][3], int p_scoreVal, bool p_scorePosVector[3][3])
+int getScorePositions(int p_scores[ROWS][COLS], int p_scoreVal, bool p_scorePosVector[ROWS][COLS])
 {
     int numberOfScores = 0;
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             if(p_scores[i][j] == p_scoreVal)
             {
@@ -214,16 +207,16 @@ int getScorePositions(int p_scores[3][3], int p_scoreVal, bool p_scorePosVector[
     return numberOfScores;
 }
 
-void setTable(int p_scores[3][3], int p_boardState[3][3], bool p_turn)
+void setTable(int p_scores[ROWS][COLS], int p_boardState[ROWS][COLS], bool p_turn)
 {
     if(p_turn == MAX)
     {
-        int maxScore = MIN_SCORE;
+        int maxScore = MIN_INF;
         int bestPosOX = -1;
         int bestPosOY = -1;
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < ROWS; i++)
         {
-            for(int j = 0; j < 3; j++)
+            for(int j = 0; j < COLS; j++)
             {
                 if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] >= maxScore)
                 {
@@ -253,15 +246,15 @@ void setTable(int p_scores[3][3], int p_boardState[3][3], bool p_turn)
         // makes the game more fun and unpredictable for the player without affecting the bot performance
         if(RANDOM_BEST_MOVE)
         {
-            bool maxScorePositions[3][3];
+            bool maxScorePositions[ROWS][COLS];
             int possibleMoves = getScorePositions(p_scores, maxScore, maxScorePositions);
             srand(time(NULL));
             int moveToMake = rand() % possibleMoves;
 
             int incrementCounter = 0;
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < ROWS; i++)
             {
-                for(int j = 0; j < 3; j++)
+                for(int j = 0; j < COLS; j++)
                 {
                     if(maxScorePositions[i][j])
                     {
@@ -280,12 +273,12 @@ void setTable(int p_scores[3][3], int p_boardState[3][3], bool p_turn)
     }
     else
     {
-        int minScore = MAX_SCORE;
+        int minScore = MAX_INF;
         int bestPosOX = -1;
         int bestPosOY = -1;
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < ROWS; i++)
         {
-            for(int j = 0; j < 3; j++)
+            for(int j = 0; j < COLS; j++)
             {
                 if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] <= minScore)
                 {
@@ -315,15 +308,15 @@ void setTable(int p_scores[3][3], int p_boardState[3][3], bool p_turn)
         // makes the game more fun and unpredictable for the player without affecting the bot performance
         if(RANDOM_BEST_MOVE)
         {
-            bool minScorePositions[3][3];
+            bool minScorePositions[ROWS][COLS];
             int possibleMoves = getScorePositions(p_scores, minScore, minScorePositions);
             srand(time(NULL));
             int moveToMake = rand() % possibleMoves;
 
             int incrementCounter = 0;
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < ROWS; i++)
             {
-                for(int j = 0; j < 3; j++)
+                for(int j = 0; j < COLS; j++)
                 {
                     if(minScorePositions[i][j])
                     {
@@ -350,18 +343,18 @@ void setTable(int p_scores[3][3], int p_boardState[3][3], bool p_turn)
     // waitForInput();
 }
 
-void copyBoardState(int p_originalBoardState[3][3], int p_newBoardState[3][3])
+void copyBoardState(int p_originalBoardState[ROWS][COLS], int p_newBoardState[ROWS][COLS])
 {
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             p_newBoardState[i][j] = p_originalBoardState[i][j];
         }
     }
 }
 
-int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth, int p_maxDepth)
+int miniMax(int p_boardState[ROWS][COLS], struct node *p_node, int p_turn, int p_depth, int p_maxDepth)
 {
     if(p_depth > p_maxDepth)
     {
@@ -383,25 +376,25 @@ int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth
         return 0;
     }
 
-    int scoresForMoves[3][3];
-    for(int i = 0; i < 3; i++)
+    int scoresForMoves[ROWS][COLS];
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             scoresForMoves[i][j] = INVALID_VALUE;
         }
     }
 
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             if(p_node->m_boardState[i][j] == 0)
             {
                 struct node newNode;
                 copyBoardState(p_node->m_boardState, newNode.m_boardState);
                 newNode.m_boardState[i][j] = p_turn ? ZERO : EX;
-                scoresForMoves[i][j] = miniMax(p_boardState, &newNode, !p_turn, p_depth + 1, MAX_DEPTH);
+                scoresForMoves[i][j] = miniMax(p_boardState, &newNode, !p_turn, p_depth + 1, p_maxDepth);
             }
         }
     }
@@ -424,7 +417,7 @@ int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth
     return 0;
 }
 
-void getAiMove(int p_boardState[3][3], bool p_PlayerTurn, int p_difficulty)
+void getAiMove(int p_boardState[ROWS][COLS], bool p_PlayerTurn, int p_difficulty)
 {
     int maxDepth;
 

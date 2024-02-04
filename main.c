@@ -10,11 +10,12 @@
 #define X_TURN 0
 #define Z_TURN 1 // zero = true
 
+#define MAIN_MENU_OPTIONS 3
+#define AI_MENU_OPTIONS 3
+#define AI_SUBMENU_OPTIONS 7
+
 #define VALID_MENU_INPUTS 6
 #define DEFAULT_INPUT_VALUE 0
-
-enum menuOptions{multiPlayer, singlePlayer, exitGame};
-enum aiMenuOptions{playWithX, playWith0, aiDifficulty};
 
 void initCurses()
 {
@@ -71,7 +72,7 @@ void setAiVariables(int p_argc, char *p_argv[], bool *isAi0, bool *p_aiEnabled)
     }
 }
 
-void enterAiMenu(bool *isAi0)
+void enterAiMenu(bool *isAi0, int *p_difficulty)
 {
     int validInputs[VALID_MENU_INPUTS] = {'\n', ' ', 'w', 's', KEY_UP, KEY_DOWN};
     bool displayDiffSubmenu = false;
@@ -95,7 +96,26 @@ void enterAiMenu(bool *isAi0)
             clear();
             mvprintw(rows/2-2, cols/2 - 9, "Play with X");
             mvprintw(rows/2-1, cols/2 - 9, "Play with 0");
-            mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
+            mvprintw(rows/2, cols/2 - 9, "Difficulty");
+            printw("(now ");
+            switch(*p_difficulty)
+            {
+                case easy:
+                    printw("easy)");
+                    break;
+                case medium:
+                    printw("medium)");
+                    break;
+                case hard:
+                    printw("hard)");
+                    break;
+                case impossible:
+                    printw("impossible)");
+                    break;
+                default:
+                    printw("impossible");
+                    break;
+            }
 
             if(displayDiffSubmenu)
             {
@@ -124,12 +144,19 @@ void enterAiMenu(bool *isAi0)
 
                 if(input == 'w' || input == KEY_UP)
                 {
-                    menuOptionSelected = aiDifficulty;
+                    if(displayDiffSubmenu)
+                    {
+                        menuOptionSelected = impossible;
+                    }
+                    else
+                    {
+                        menuOptionSelected = aiDifficulty;
+                    }
                 }
 
                 if(input == 's' || input == KEY_DOWN)
                 {
-                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    menuOptionSelected = (menuOptionSelected + 1) % AI_MENU_OPTIONS;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -155,12 +182,12 @@ void enterAiMenu(bool *isAi0)
 
                 if(input == 'w' || input == KEY_UP)
                 {
-                    menuOptionSelected = (menuOptionSelected - 1) % 3;
+                    menuOptionSelected = (menuOptionSelected - 1) % AI_MENU_OPTIONS;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
-                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    menuOptionSelected = (menuOptionSelected + 1) % AI_MENU_OPTIONS;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -176,7 +203,26 @@ void enterAiMenu(bool *isAi0)
                 {
                     attron(COLOR_PAIR(RED_WHITE_PAIR));
                     attron(A_BOLD);
-                    mvprintw(rows/2, cols/2 - 9, "Difficulty (default max)");
+                    mvprintw(rows/2, cols/2 - 9, "Difficulty ");
+                    printw("(now ");
+                    switch(*p_difficulty)
+                    {
+                        case easy:
+                            printw("easy)");
+                            break;
+                        case medium:
+                            printw("medium)");
+                            break;
+                        case hard:
+                            printw("hard)");
+                            break;
+                        case impossible:
+                            printw("impossible)");
+                            break;
+                        default:
+                            printw("impossible");
+                            break;
+                    }
                     attroff(A_BOLD);
                     attroff(COLOR_PAIR(RED_WHITE_PAIR));
 
@@ -186,16 +232,151 @@ void enterAiMenu(bool *isAi0)
 
                 if(input == 'w' || input == KEY_UP)
                 {
-                    menuOptionSelected = (menuOptionSelected - 1) % 3;
+                    menuOptionSelected = (menuOptionSelected - 1) % AI_MENU_OPTIONS;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
-                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    if(displayDiffSubmenu)
+                    {
+                        menuOptionSelected = (menuOptionSelected + 1) % AI_SUBMENU_OPTIONS;
+                    }
+                    else
+                    {
+                        menuOptionSelected = (menuOptionSelected + 1) % AI_MENU_OPTIONS;
+                    }
                 }
 
                 if(input == '\n' || input == ' ')
                 {
+                    displayDiffSubmenu = !displayDiffSubmenu;
+                }   
+
+                break;
+
+            case easy:
+                if(changedState)
+                {
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2+1, cols/2 - 7, "easy");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP)
+                {
+                    menuOptionSelected = (menuOptionSelected - 1) % AI_SUBMENU_OPTIONS;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % AI_SUBMENU_OPTIONS;
+                }
+
+                if(input == '\n' || input == ' ')
+                {
+                    *p_difficulty = easy;
+                    menuOptionSelected = aiDifficulty;
+                    displayDiffSubmenu = !displayDiffSubmenu;
+                }   
+
+                break;
+
+            case medium:
+                if(changedState)
+                {
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2+2, cols/2 - 7, "medium");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP)
+                {
+                    menuOptionSelected = (menuOptionSelected - 1) % AI_SUBMENU_OPTIONS;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % AI_SUBMENU_OPTIONS;
+                }
+
+                if(input == '\n' || input == ' ')
+                {
+                    *p_difficulty = medium;
+                    menuOptionSelected = aiDifficulty;
+                    displayDiffSubmenu = !displayDiffSubmenu;
+                }   
+
+                break;
+                        
+            case hard:
+                if(changedState)
+                {
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2+3, cols/2 - 7, "hard");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP)
+                {
+                    menuOptionSelected = (menuOptionSelected - 1) % AI_SUBMENU_OPTIONS;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % AI_SUBMENU_OPTIONS;
+                }
+
+                if(input == '\n' || input == ' ')
+                {
+                    *p_difficulty = hard;
+                    menuOptionSelected = aiDifficulty;
+                    displayDiffSubmenu = !displayDiffSubmenu;
+                }   
+
+                break;
+            
+            case impossible:
+                if(changedState)
+                {
+                    attron(COLOR_PAIR(RED_WHITE_PAIR));
+                    attron(A_BOLD);
+                    mvprintw(rows/2+4, cols/2 - 7, "impossible");
+                    attroff(A_BOLD);
+                    attroff(COLOR_PAIR(RED_WHITE_PAIR));
+
+                    refresh();
+                    changedState = false;
+                }
+
+                if(input == 'w' || input == KEY_UP)
+                {
+                    menuOptionSelected = (menuOptionSelected - 1) % AI_SUBMENU_OPTIONS;
+                }
+                
+                if(input == 's' || input == KEY_DOWN)
+                {
+                    menuOptionSelected = (menuOptionSelected + 1) % AI_SUBMENU_OPTIONS;
+                }
+
+                if(input == '\n' || input == ' ')
+                {
+                    *p_difficulty = impossible;
+                    menuOptionSelected = aiDifficulty;
                     displayDiffSubmenu = !displayDiffSubmenu;
                 }   
 
@@ -214,10 +395,9 @@ void enterAiMenu(bool *isAi0)
     }
 }
 
-bool selectGameMode(bool *isAi0, bool *aiEnabled)
+bool selectGameMode(bool *isAi0, bool *aiEnabled, int *p_difficulty)
 {
     int validInputs[VALID_MENU_INPUTS] = {'\n', ' ', 'w', 's', KEY_UP, KEY_DOWN};
-    
     bool changedState = true;
     bool inMainMenu = true;
     int menuOptionSelected = multiPlayer;
@@ -263,7 +443,7 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
-                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    menuOptionSelected = (menuOptionSelected + 1) % MAIN_MENU_OPTIONS;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -289,12 +469,12 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
 
                 if(input == 'w' || input == KEY_UP)
                 {
-                    menuOptionSelected = (menuOptionSelected - 1) % 3;
+                    menuOptionSelected = (menuOptionSelected - 1) % MAIN_MENU_OPTIONS;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
-                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    menuOptionSelected = (menuOptionSelected + 1) % MAIN_MENU_OPTIONS;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -320,12 +500,12 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
 
                 if(input == 'w' || input == KEY_UP)
                 {
-                    menuOptionSelected = (menuOptionSelected - 1) % 3;
+                    menuOptionSelected = (menuOptionSelected - 1) % MAIN_MENU_OPTIONS;
                 }
                 
                 if(input == 's' || input == KEY_DOWN)
                 {
-                    menuOptionSelected = (menuOptionSelected + 1) % 3;
+                    menuOptionSelected = (menuOptionSelected + 1) % MAIN_MENU_OPTIONS;
                 }
 
                 if(input == '\n' || input == ' ')
@@ -350,17 +530,17 @@ bool selectGameMode(bool *isAi0, bool *aiEnabled)
 
     if(*aiEnabled)
     {
-        enterAiMenu(isAi0);
+        enterAiMenu(isAi0, p_difficulty);
     }
 
     return false;
 }
 
-void clearTable(int table[3][3])
+void clearTable(int table[ROWS][COLS])
 {
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             table[i][j] = 0;
         }
@@ -377,7 +557,7 @@ int main()
     bool bExit = false;
     bool bPlayerTurn = X_TURN;
     int nUserInput;	
-    int npBackendTable[3][3] = { 
+    int npBackendTable[ROWS][COLS] = { 
                     {0, 0, 0},
                     {0, 0, 0},
                     {0, 0, 0}
@@ -385,7 +565,7 @@ int main()
 
     initCurses();
 
-    bExit = selectGameMode(&isAi0, &aiEnabled);
+    bExit = selectGameMode(&isAi0, &aiEnabled, &difficulty);
     if(aiEnabled && isAi0 == false)
     {
         getAiMove(npBackendTable, bPlayerTurn, difficulty);
@@ -413,7 +593,7 @@ int main()
         
         if(bExit)
         {
-            bExit = selectGameMode(&isAi0, &aiEnabled);
+            bExit = selectGameMode(&isAi0, &aiEnabled, &difficulty);
             clearTable(npBackendTable);
             bPlayerTurn = X_TURN;
 

@@ -16,7 +16,16 @@
 
 #define MAX_SCORE 100
 #define MIN_SCORE -100
+
+#define MAX_INF 10000
+#define MIN_INF -10000
 #define INVALID_VALUE 1000
+
+#define X_BIT 1
+#define Z_BIT 2
+
+#define setCheckerX(checker) checker = checker | X_BIT
+#define setChecker0(checker) checker = checker | Z_BIT
 
 struct node
 {

@@ -13,6 +13,7 @@
 #define ROWS 3
 #define COLS 3
 
-enum aiDifficulty{easy, medium, hard, impossible};
+enum menuOptions{multiPlayer, singlePlayer, exitGame};
+enum aiMenuOptions{playWithX, playWith0, aiDifficulty, easy, medium, hard, impossible};
 
 #endif
