@@ -1,10 +1,15 @@
 #ifndef AI_H
 #define AI_H
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <ncurses.h>
+#include <time.h> // for random number generation
 #include "printing.h"
 #include "usefulDefines.h"
 #include "gameLogic.h"
+
+#define RANDOM_BEST_MOVE 1
 
 #define MAX_CHILDREN 9 // 9 possible empty table positions
 #define MAX_DEPTH 10000

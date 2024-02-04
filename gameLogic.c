@@ -209,7 +209,7 @@ bool printWinner(int p_npTable[3][3])
 
         attron(COLOR_PAIR(RED_WHITE_PAIR));
         attron(A_BOLD);
-        mvprintw(1, cols/2-2, "%c WON", nWinner == 1 ? '0' : 'X' );
+        mvprintw(rows/2, cols/2-3, " %c WON ", nWinner == 1 ? '0' : 'X' );
         attroff(COLOR_PAIR(RED_WHITE_PAIR));
         attroff(A_BOLD);
 
@@ -250,7 +250,7 @@ bool printDraw(int p_npTable[3][3])
         
         attron(COLOR_PAIR(RED_WHITE_PAIR));
         attron(A_BOLD);
-        mvprintw(1, cols/2-2, "DRAW");  
+        mvprintw(rows/2, cols/2-3, " DRAW ");  
         attroff(COLOR_PAIR(RED_WHITE_PAIR));
         attroff(A_BOLD);
         

@@ -174,7 +174,29 @@ void debugPrintTable(int table[3][3])
     }
 }
 
-void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
+// returns the number of same score positions and a mask with ones for the positons of the scores and zeros for everywhere else
+int getScorePositions(int p_scores[3][3], int p_scoreVal, bool p_scorePosVector[3][3])
+{
+    int numberOfScores = 0;
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
+            if(p_scores[i][j] == p_scoreVal)
+            {
+                p_scorePosVector[i][j] = 1;
+                numberOfScores ++;
+            }
+            else
+            {
+                p_scorePosVector[i][j] = 0;
+            }
+        }
+    }
+    return numberOfScores;
+}
+
+void setTable(int p_scores[3][3], int p_boardState[3][3], bool p_turn)
 {
     if(p_turn == MAX)
     {
@@ -185,9 +207,9 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
         {
             for(int j = 0; j < 3; j++)
             {
-                if(scores[i][j] != INVALID_VALUE && scores[i][j] >= maxScore)
+                if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] >= maxScore)
                 {
-                    maxScore = scores[i][j];
+                    maxScore = p_scores[i][j];
                     bestPosOX = i;
                     bestPosOY = j;
                 }
@@ -209,6 +231,32 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
 
             return;
         }
+        
+        // makes the game more fun and unpredictable for the player without affecting the bot performance
+        if(RANDOM_BEST_MOVE)
+        {
+            bool maxScorePositions[3][3];
+            int possibleMoves = getScorePositions(p_scores, maxScore, maxScorePositions);
+            srand(time(NULL));
+            int moveToMake = rand() % possibleMoves;
+
+            int incrementCounter = 0;
+            for(int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 3; j++)
+                {
+                    if(maxScorePositions[i][j])
+                    {
+                        if(incrementCounter == moveToMake)
+                        {
+                            bestPosOX = i;
+                            bestPosOY = j;   
+                        }
+                        incrementCounter ++;
+                    }
+                }
+            }
+        }
 
         p_boardState[bestPosOX][bestPosOY] = EX;
     }
@@ -221,9 +269,9 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
         {
             for(int j = 0; j < 3; j++)
             {
-                if(scores[i][j] != INVALID_VALUE && scores[i][j] <= minScore)
+                if(p_scores[i][j] != INVALID_VALUE && p_scores[i][j] <= minScore)
                 {
-                    minScore = scores[i][j];
+                    minScore = p_scores[i][j];
                     bestPosOX = i;
                     bestPosOY = j;
                 }
@@ -246,6 +294,32 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
             return;
         }
 
+        // makes the game more fun and unpredictable for the player without affecting the bot performance
+        if(RANDOM_BEST_MOVE)
+        {
+            bool minScorePositions[3][3];
+            int possibleMoves = getScorePositions(p_scores, minScore, minScorePositions);
+            srand(time(NULL));
+            int moveToMake = rand() % possibleMoves;
+
+            int incrementCounter = 0;
+            for(int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 3; j++)
+                {
+                    if(minScorePositions[i][j])
+                    {
+                        if(incrementCounter == moveToMake)
+                        {
+                            bestPosOX = i;
+                            bestPosOY = j;   
+                        }
+                        incrementCounter ++;
+                    }
+                }
+            }
+        }
+
         p_boardState[bestPosOX][bestPosOY] = ZERO;
     }
 
@@ -255,7 +329,7 @@ void setTable(int scores[3][3], int p_boardState[3][3], bool p_turn)
     // int score = scoreTheState(p_boardState);
     // mvprintw(0, 1, "current score: ");
     // printw("%d", score);  
-    // debugPrintTable(scores);
+    // debugPrintTable(p_scores);
     // refresh();
     // waitForInput();
 }
@@ -271,9 +345,9 @@ void copyBoardState(int p_originalBoardState[3][3], int p_newBoardState[3][3])
     }
 }
 
-int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth)
+int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth, int p_maxDepth)
 {
-    if(p_depth > MAX_DEPTH)
+    if(p_depth > p_maxDepth)
     {
         return scoreTheState(p_node->m_boardState);
     }
@@ -311,7 +385,7 @@ int miniMax(int p_boardState[3][3], struct node *p_node, int p_turn, int p_depth
                 struct node newNode;
                 copyBoardState(p_node->m_boardState, newNode.m_boardState);
                 newNode.m_boardState[i][j] = p_turn ? ZERO : EX;
-                scoresForMoves[i][j] = miniMax(p_boardState, &newNode, !p_turn, p_depth + 1);
+                scoresForMoves[i][j] = miniMax(p_boardState, &newNode, !p_turn, p_depth + 1, MAX_DEPTH);
             }
         }
     }
@@ -338,7 +412,7 @@ void getAiMove(int p_boardState[3][3], bool p_PlayerTurn)
 {
     struct node currentNode;
     copyBoardState(p_boardState, currentNode.m_boardState);
-    miniMax(p_boardState, &currentNode, p_PlayerTurn, 0);
+    miniMax(p_boardState, &currentNode, p_PlayerTurn, 0, MAX_DEPTH);
 }
 
 // clear();
