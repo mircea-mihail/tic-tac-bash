@@ -2,7 +2,7 @@
  
  This began as a small project for my Operating Systems course meant to recreate a game of Tic-Tac-Toe in the Bash terminal using ncurses.
  
- After finishing taking my first AI course I got inspired to put my knowledge to the test and implement a minimax algorithm in order to build an intelligent adversary to play against. 
+ After finishing taking my first AI course I got inspired to put my knowledge to the test and implemented a minimax algorithm in order to build an intelligent adversary to play against. 
 
  I also built an intuitive menu for the whole project, tying it all together.
 
@@ -37,8 +37,8 @@ You can also press Q any time to exit the game.
  
 If you're not really sold on the idea but still want to take a look at the project without installing it on your machine, here are some pictures of the project:
 
-<img src="media/main-menu-ai.png" alt="finished-project" height="120"/><img src="media/main-menu-friend.png" alt="finished-project" height="120"/><img src="media/ai-menu.png" alt="finished-project" height="120"/>
+<img src="media/main-menu-ai.png" alt="main-menu-ai.png" height="120"/> <img src="media/main-menu-friend.png" alt="main-menu-friend.png" height="120"/> <img src="media/ai-menu.png" alt="ai-menu.png" height="120"/>
 
-<img src="media/x-won.png" alt="finished-project" height="400"/>
-<img src="media/draw-game.png" alt="finished-project" height="400"/>
-<img src="media/who-will-win.png" alt="finished-project" height="400"/>
+<img src="media/x-won.png" alt="x-won.png" height="400"/>
+<img src="media/draw-game.png" alt="draw-game.png" height="400"/>
+<img src="media/who-will-win.png" alt="who-will-win.png" height="400"/>
