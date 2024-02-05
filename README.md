@@ -37,6 +37,8 @@ You can also press Q any time to exit the game.
  
 If you're not really sold on the idea but still want to take a look at the project without installing it on your machine, here are some pictures of the project:
 
-<img src="media/main-menu-ai.png" alt="finished-project" height="300"/><img src="media/main-menu-friend.png" alt="finished-project" height="300"/><img src="media/ai-menu.png" alt="finished-project" height="300"/>
+<img src="media/main-menu-ai.png" alt="finished-project" height="120"/><img src="media/main-menu-friend.png" alt="finished-project" height="120"/><img src="media/ai-menu.png" alt="finished-project" height="120"/>
 
-<img src="media/x-won.png" alt="finished-project" height="300"/><img src="media/draw-game.png" alt="finished-project" height="300"/><img src="media/who-will-win.png" alt="finished-project" height="300"/>
+<img src="media/x-won.png" alt="finished-project" height="400"/>
+<img src="media/draw-game.png" alt="finished-project" height="400"/>
+<img src="media/who-will-win.png" alt="finished-project" height="400"/>
