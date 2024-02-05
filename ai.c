@@ -163,6 +163,7 @@ void setFirstFreeSpot(int p_boardState[ROWS][COLS], bool p_turn)
             if(p_boardState[i][j] == 0)
             {
                 p_boardState[i][j] = p_turn ? ZERO : EX;   
+                return;
             }
         }
     }   
@@ -227,13 +228,13 @@ void setTable(int p_scores[ROWS][COLS], int p_boardState[ROWS][COLS], bool p_tur
             setFirstFreeSpot(p_boardState, p_turn);
 
             // for debug, delete later
-            clear();
-            printTable(p_boardState);
-            int score = scoreTheState(p_boardState);
-            mvprintw(0, 1, "current score: ");
-            printw("%d", score);  
-            refresh();
-            waitForInput();
+            // clear();
+            // printTable(p_boardState);
+            // int score = scoreTheState(p_boardState);
+            // mvprintw(0, 1, "current score: ");
+            // printw("%d", score);  
+            // refresh();
+            // waitForInput();
 
             return;
         }
@@ -289,13 +290,13 @@ void setTable(int p_scores[ROWS][COLS], int p_boardState[ROWS][COLS], bool p_tur
             setFirstFreeSpot(p_boardState, p_turn);
             
             // for debug, delete later
-            clear();
-            printTable(p_boardState);
-            int score = scoreTheState(p_boardState);
-            mvprintw(0, 1, "current score: ");
-            printw("%d", score);  
-            refresh();
-            waitForInput();
+            // clear();
+            // printTable(p_boardState);
+            // int score = scoreTheState(p_boardState);
+            // mvprintw(0, 1, "current score: ");
+            // printw("%d", score);  
+            // refresh();
+            // waitForInput();
 
             return;
         }

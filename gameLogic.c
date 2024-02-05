@@ -2,7 +2,7 @@
 #include "gameLogic.h"
 #include "printing.h"
 
-bool checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
+bool checkMouse(int npTable[ROWS][COLS], int nUserInput, bool* bpPlayerTurn)
 {
     int nRows, nCols;
     getmaxyx(stdscr, nRows, nCols);
@@ -42,7 +42,7 @@ bool checkMouse(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
     return false;
 }
 
-bool updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
+bool updateTable(int npTable[ROWS][COLS], int nUserInput, bool* bpPlayerTurn)
 {
     switch(nUserInput)
     { 
@@ -113,7 +113,7 @@ bool updateTable(int npTable[3][3], int nUserInput, bool* bpPlayerTurn)
 }
 
 // returns the winning player
-int checkWinCondition(int p_npTable[3][3])
+int checkWinCondition(int p_npTable[ROWS][COLS])
 {
     bool winCondition = true;
     //check diagonal
@@ -196,7 +196,7 @@ void waitForInput()
     }
 }
 
-bool printWinner(int p_npTable[3][3])
+bool printWinner(int p_npTable[ROWS][COLS])
 {
     int nWinner = checkWinCondition(p_npTable);        
     if(nWinner)
@@ -221,11 +221,11 @@ bool printWinner(int p_npTable[3][3])
     return false;
 }
 
-bool checkDraw(int p_npTable[3][3])
+bool checkDraw(int p_npTable[ROWS][COLS])
 {
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             if(p_npTable[i][j] == 0)
             {
@@ -236,7 +236,7 @@ bool checkDraw(int p_npTable[3][3])
     return true;
 }
 
-bool printDraw(int p_npTable[3][3])
+bool printDraw(int p_npTable[ROWS][COLS])
 {
     bool bWasDraw = checkDraw(p_npTable);
 

@@ -29,15 +29,15 @@
 
 struct node
 {
-    int m_boardState[3][3];
+    int m_boardState[ROWS][COLS];
 };
 
 // generates the next move of the ai based on the mini max algorithm 
-void getAiMove(int p_BackendTable[3][3], bool p_bPlayerTurn, int p_difficulty);
+void getAiMove(int p_BackendTable[ROWS][COLS], bool p_bPlayerTurn, int p_difficulty);
 
 // returns the score a state has by checking how many ways a symbol can win based on the board state. 
 // zero is min so for each way 0 can win you add -1 and X is max so for each way x can win you add 1
-int scoreTheState(int p_boardState[3][3]);
+int scoreTheState(int p_boardState[ROWS][COLS]);
 
 // the checker is a bit mask that has b01 set if it found an x and has b10 set if found a 0. 
 // this function returns 0 if it finds both x and 0, 1 if x is found and -1 if found 0 (0 is min, x max)
@@ -69,8 +69,10 @@ void setTable(int p_scores[ROWS][COLS], int p_boardState[ROWS][COLS], bool p_tur
 // copies the board state from the original to the new one
 void copyBoardState(int p_originalBoardState[ROWS][COLS], int p_newBoardState[ROWS][COLS]);
 
-// recursively runs the minimax algorithm returning the best move of the 
+// recursively runs the minimax algorithm returning the best move of the zq
 int miniMax(int p_boardState[ROWS][COLS], struct node *p_node, int p_turn, int p_depth, int p_maxDepth);
 
+// calls the minimax algorithm with a different maximum depth depending on the difficulty chosen by the player
+void getAiMove(int p_boardState[ROWS][COLS], bool p_PlayerTurn, int p_difficulty);
 
 #endif

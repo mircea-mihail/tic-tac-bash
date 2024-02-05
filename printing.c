@@ -2,7 +2,7 @@
 
 void dealWithColors()
 {
-    start_color();
+    start_color(); // enables the use of colors
     
     init_pair(BLACK_PAIR, COLOR_BLACK, COLOR_BLACK);
     init_pair(RED_PAIR, COLOR_RED, COLOR_RED);
@@ -126,7 +126,7 @@ void printTableLines(int p_nRows, int p_nCols, int p_nCellSize, int p_nScreenGap
     }
 }
 
-void printTable(int npTable[3][3])
+void printTable(int npTable[ROWS][COLS])
 {
     bool bThickLetters = false;
     int nRows, nCols;
@@ -150,10 +150,10 @@ void printTable(int npTable[3][3])
     // mvPrintX(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
     // mvPrint0(nRows/2, nCols/2, nScreenGap-1, bThickLetters);
     
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < ROWS; i++)
     {
         move(nStartRow, nStartCol);
-        for(int j = 0; j < 3; j++)
+        for(int j = 0; j < COLS; j++)
         {
             // printw("%d ", npTable[i][j]);
             if(npTable[i][j] == 1)
